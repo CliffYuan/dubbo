@@ -22,4 +22,6 @@
 
 	<dubbo:reference id="demoService" interface="com.alibaba.dubbo.demo.DemoService" />
 
+    <dubbo:reference id="xndService" interface="com.alibaba.dubbo.demo.XndService" />
+
 </beans>
