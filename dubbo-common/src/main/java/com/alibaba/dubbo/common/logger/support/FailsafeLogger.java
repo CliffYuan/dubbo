@@ -184,4 +184,8 @@ public class FailsafeLogger implements Logger {
 	    }
 	}
 
+    public void xnd(String msg) {
+        //info("--$$$$$xnd$$$$$--:"+msg);
+        System.out.println("-----xnd-----:"+msg);
+    }
 }

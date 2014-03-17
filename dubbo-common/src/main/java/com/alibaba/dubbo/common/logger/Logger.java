@@ -167,4 +167,12 @@ public interface Logger {
 	 */
 	public boolean isErrorEnabled();
 
+
+    /**
+     * 输出普通信息
+     *
+     * @param msg 信息内容
+     */
+    public void xnd(String msg);
+
 }

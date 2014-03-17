@@ -94,4 +94,8 @@ public class Slf4jLogger implements Logger, Serializable {
         return logger.isErrorEnabled();
     }
 
+    public void xnd(String msg) {
+        info("--xnd--:"+msg);
+    }
+
 }

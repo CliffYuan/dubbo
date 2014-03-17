@@ -110,4 +110,8 @@ public class Log4jLogger implements Logger {
 	    return logger.isEnabledFor(Level.ERROR);
 	}
 
+    public void xnd(String msg) {
+        info("--xnd--:"+msg);
+    }
+
 }

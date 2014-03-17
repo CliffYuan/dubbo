@@ -104,4 +104,8 @@ public class JclLogger implements Logger, Serializable {
 		return logger.isErrorEnabled();
 	}
 
+    public void xnd(String msg) {
+        info(msg);
+    }
+
 }

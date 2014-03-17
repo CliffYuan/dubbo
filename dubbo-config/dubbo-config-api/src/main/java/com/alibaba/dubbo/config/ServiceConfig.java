@@ -460,6 +460,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         }
 
         String scope = url.getParameter(Constants.SCOPE_KEY);
+        logger.xnd("scope="+scope);
         //配置为none不暴露
         if (! Constants.SCOPE_NONE.toString().equalsIgnoreCase(scope)) {
 
