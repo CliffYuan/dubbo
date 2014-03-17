@@ -16,6 +16,8 @@
 package com.alibaba.dubbo.rpc.proxy;
 
 import com.alibaba.dubbo.common.Constants;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.ReflectUtils;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.ProxyFactory;
@@ -28,6 +30,8 @@ import com.alibaba.dubbo.rpc.service.EchoService;
  * @author william.liangf
  */
 public abstract class AbstractProxyFactory implements ProxyFactory {
+
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractProxyFactory.class);
 
     public <T> T getProxy(Invoker<T> invoker) throws RpcException {
         Class<?>[] interfaces = null;

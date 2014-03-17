@@ -18,6 +18,8 @@ package com.alibaba.dubbo.rpc.proxy;
 import java.lang.reflect.InvocationTargetException;
 
 import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.Invocation;
@@ -30,6 +32,8 @@ import com.alibaba.dubbo.rpc.RpcResult;
  * @author william.liangf
  */
 public abstract class AbstractProxyInvoker<T> implements Invoker<T> {
+
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractProxyInvoker.class);
     
     private final T proxy;
     
@@ -69,6 +73,8 @@ public abstract class AbstractProxyInvoker<T> implements Invoker<T> {
 
     public Result invoke(Invocation invocation) throws RpcException {
         try {
+            logger.xnd("执行:"+type.getSimpleName()+"的"+invocation.getMethodName()+"方法");
+            logger.xnd("转化为执行"+type.getSimpleName()+"对应的Wrapper的方法");
             return new RpcResult(doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments()));
         } catch (InvocationTargetException e) {
             return new RpcResult(e.getTargetException());

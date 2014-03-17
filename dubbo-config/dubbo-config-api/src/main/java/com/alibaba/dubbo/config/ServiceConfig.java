@@ -466,10 +466,12 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
             //配置不是remote的情况下做本地暴露 (配置为remote，则表示只暴露远程服务)
             if (!Constants.SCOPE_REMOTE.toString().equalsIgnoreCase(scope)) {
+                logger.xnd("暴露本地服务，scope="+scope);
                 exportLocal(url);
             }
             //如果配置不是local则暴露为远程服务.(配置为local，则表示只暴露远程服务)
             if (! Constants.SCOPE_LOCAL.toString().equalsIgnoreCase(scope) ){
+                logger.xnd("暴露远程服务，scope="+scope);
                 if (logger.isInfoEnabled()) {
                     logger.info("Export dubbo service " + interfaceClass.getName() + " to url " + url);
                 }
@@ -484,6 +486,15 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                         if (logger.isInfoEnabled()) {
                             logger.info("Register dubbo service " + interfaceClass.getName() + " url " + url + " to registry " + registryURL);
                         }
+                        logger.xnd("暴露远程服务,注册服务："+interfaceClass.getName()+" 到注册中心URL："+registryURL);
+                        logger.xnd("暴露远程服务,URL："+url.toFullString());
+                        logger.xnd("暴露远程服务,Invoker URL："+registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
+                        // Invoker URL=
+                        //     +registry://127.0.0.1:2181/com.alibaba.dubbo.registry.RegistryService?application=demo-provider&dubbo=2.0.0&export=
+                        //     +URL
+                        //     +&owner=william&pid=22665&registry=zookeeper&timestamp=1395070659354
+
+
                         Invoker<?> invoker = proxyFactory.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
 
                         Exporter<?> exporter = protocol.export(invoker);
@@ -508,6 +519,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                     .setProtocol(Constants.LOCAL_PROTOCOL)
                     .setHost(NetUtils.LOCALHOST)
                     .setPort(0);
+            logger.xnd("暴露本地服务，URL="+local.toString());
             Exporter<?> exporter = protocol.export(
                     proxyFactory.getInvoker(ref, (Class) interfaceClass, local));
             exporters.add(exporter);

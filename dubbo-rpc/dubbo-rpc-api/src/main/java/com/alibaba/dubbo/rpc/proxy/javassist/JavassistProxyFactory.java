@@ -37,15 +37,20 @@ public class JavassistProxyFactory extends AbstractProxyFactory {
 
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) {
         // TODO Wrapper类不能正确处理带$的类名
+        logger.xnd("开始创建接口:"+type.getName()+"的包装代理类wrapper");
         final Wrapper wrapper = Wrapper.getWrapper(proxy.getClass().getName().indexOf('$') < 0 ? proxy.getClass() : type);
-        return new AbstractProxyInvoker<T>(proxy, type, url) {
+        logger.xnd("结束创建接口:"+type.getName()+"的包装代理类wrapper，通过解析接口中所有方法，根据方法构造成IF语句，然后在执行时，通过传入的类实例调用的对应方法。");
+        Invoker invoker= new AbstractProxyInvoker<T>(proxy, type, url) {
             @Override
             protected Object doInvoke(T proxy, String methodName, 
                                       Class<?>[] parameterTypes, 
                                       Object[] arguments) throws Throwable {
+                logger.xnd("执行:"+this.getInterface().getName()+"的"+methodName+"方法");
                 return wrapper.invokeMethod(proxy, methodName, parameterTypes, arguments);
             }
         };
+        logger.xnd("创建接口:"+type.getName()+"的Invoker对象，包装了类实例，及"+type.getName()+"包装代理类wrapper");
+        return invoker;
     }
 
 }

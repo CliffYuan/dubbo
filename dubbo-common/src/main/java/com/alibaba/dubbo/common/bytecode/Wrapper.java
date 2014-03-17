@@ -28,6 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.ClassHelper;
 import com.alibaba.dubbo.common.utils.ReflectUtils;
 
@@ -39,6 +41,8 @@ import com.alibaba.dubbo.common.utils.ReflectUtils;
 
 public abstract class Wrapper
 {
+    protected static final Logger logger = LoggerFactory.getLogger(Wrapper.class);
+
 	private static AtomicLong WRAPPER_CLASS_COUNTER = new AtomicLong(0);
 
 	private static final Map<Class<?>, Wrapper> WRAPPER_MAP = new ConcurrentHashMap<Class<?>, Wrapper>(); //class wrapper map
@@ -340,6 +344,9 @@ public abstract class Wrapper
 		cc.addMethod(c1.toString());
 		cc.addMethod(c2.toString());
 		cc.addMethod(c3.toString());
+
+        logger.xnd("类："+c.getSimpleName()+"的Wrapper的invokeMethod方法内容为:");
+        logger.xnd(c3.toString());
 
 		try
 		{
