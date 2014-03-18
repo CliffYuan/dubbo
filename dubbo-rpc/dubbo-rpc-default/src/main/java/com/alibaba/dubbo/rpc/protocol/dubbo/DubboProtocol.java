@@ -228,10 +228,13 @@ public class DubboProtocol extends AbstractProtocol {
     }
 
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
+        logger.xnd("暴露Dubbo远程服务开始，url="+invoker.getUrl());
         URL url = invoker.getUrl();
         
         // export service.
         String key = serviceKey(url);
+        logger.xnd("服务的唯一标示："+key);
+        logger.xnd("创建DubboExporter对象");
         DubboExporter<T> exporter = new DubboExporter<T>(invoker, key, exporterMap);
         exporterMap.put(key, exporter);
         
@@ -261,6 +264,7 @@ public class DubboProtocol extends AbstractProtocol {
         //client 也可以暴露一个只有server可以调用的服务。
         boolean isServer = url.getParameter(Constants.IS_SERVER_KEY,true);
         if (isServer) {
+            logger.xnd("查找key="+key+" 对应的ExchangeServer");
         	ExchangeServer server = serverMap.get(key);
         	if (server == null) {
         		serverMap.put(key, createServer(url));
@@ -284,6 +288,7 @@ public class DubboProtocol extends AbstractProtocol {
         url = url.addParameter(Constants.CODEC_KEY, Version.isCompatibleVersion() ? COMPATIBLE_CODEC_NAME : DubboCodec.NAME);
         ExchangeServer server;
         try {
+            logger.xnd("绑定服务url="+url);
             server = Exchangers.bind(url, requestHandler);
         } catch (RemotingException e) {
             throw new RpcException("Fail to start server(url: " + url + ") " + e.getMessage(), e);

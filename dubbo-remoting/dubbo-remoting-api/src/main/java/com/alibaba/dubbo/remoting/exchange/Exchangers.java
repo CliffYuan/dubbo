@@ -19,6 +19,8 @@ import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.Version;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.remoting.ChannelHandler;
 import com.alibaba.dubbo.remoting.RemotingException;
 import com.alibaba.dubbo.remoting.exchange.support.ExchangeHandlerDispatcher;
@@ -31,6 +33,8 @@ import com.alibaba.dubbo.remoting.transport.ChannelHandlerAdapter;
  * @author william.liangf
  */
 public class Exchangers {
+
+    protected static final Logger logger = LoggerFactory.getLogger(Exchangers.class);
 
     public static ExchangeServer bind(String url, Replier<?> replier) throws RemotingException {
         return bind(URL.valueOf(url), replier);
@@ -60,7 +64,9 @@ public class Exchangers {
             throw new IllegalArgumentException("handler == null");
         }
         url = url.addParameterIfAbsent(Constants.CODEC_KEY, "exchange");
-        return getExchanger(url).bind(url, handler);
+        Exchanger exchanger= getExchanger(url);
+        logger.xnd("查找通过url="+url+"查找Exchanger");
+        return exchanger.bind(url, handler);
     }
 
     public static ExchangeClient connect(String url) throws RemotingException {
