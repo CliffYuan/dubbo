@@ -80,10 +80,12 @@ public class RegistryProtocol implements Protocol {
     private static RegistryProtocol INSTANCE;
 
     public RegistryProtocol() {
+        logger.xnd("创建RegistryProtocol实例");
         INSTANCE = this;
     }
     
     public static RegistryProtocol getRegistryProtocol() {
+        logger.xnd("获取RegistryProtocol实例");
         if (INSTANCE == null) {
             ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(Constants.REGISTRY_PROTOCOL); // load
         }
@@ -103,17 +105,22 @@ public class RegistryProtocol implements Protocol {
     private final static Logger logger = LoggerFactory.getLogger(RegistryProtocol.class);
     
     public <T> Exporter<T> export(final Invoker<T> originInvoker) throws RpcException {
+        logger.xnd("RegistryProtocol export Invoker,把服务提供者发布到注册中心");
         //export invoker
         final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker);
         //registry provider
+        logger.xnd("RegistryProtocol 获取Registry开始");
         final Registry registry = getRegistry(originInvoker);
         final URL registedProviderUrl = getRegistedProviderUrl(originInvoker);
+        logger.xnd("RegistryProtocol 注册url="+registedProviderUrl.toFullString());
+        logger.xnd("到registry，="+registry.getUrl());
         registry.register(registedProviderUrl);
         // 订阅override数据
         // FIXME 提供者订阅时，会影响同一JVM即暴露服务，又引用同一服务的的场景，因为subscribed以服务名为缓存的key，导致订阅信息覆盖。
         final URL overrideSubscribeUrl = getSubscribedOverrideUrl(registedProviderUrl);
         final OverrideListener overrideSubscribeListener = new OverrideListener(overrideSubscribeUrl);
         overrideListeners.put(overrideSubscribeUrl, overrideSubscribeListener);
+        logger.xnd("RegistryProtocol 订阅"+overrideSubscribeUrl.toFullString()+",监听执行"+overrideSubscribeListener);
         registry.subscribe(overrideSubscribeUrl, overrideSubscribeListener);
         //保证每次export都返回一个新的exporter实例
         return new Exporter<T>() {

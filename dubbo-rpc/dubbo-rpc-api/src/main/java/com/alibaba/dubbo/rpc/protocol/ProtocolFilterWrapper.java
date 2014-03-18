@@ -20,6 +20,8 @@ import java.util.List;
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.rpc.Exporter;
 import com.alibaba.dubbo.rpc.Filter;
 import com.alibaba.dubbo.rpc.Invocation;
@@ -35,9 +37,12 @@ import com.alibaba.dubbo.rpc.RpcException;
  */
 public class ProtocolFilterWrapper implements Protocol {
 
+    protected static final Logger logger = LoggerFactory.getLogger(ProtocolFilterWrapper.class);
+
     private final Protocol protocol;
 
     public ProtocolFilterWrapper(Protocol protocol){
+        logger.xnd("创建ProtocolFilterWrapper实例");
         if (protocol == null) {
             throw new IllegalArgumentException("protocol == null");
         }
@@ -49,6 +54,7 @@ public class ProtocolFilterWrapper implements Protocol {
     }
 
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
+        logger.xnd("ProtocolFilterWrapper export invoker,"+invoker.getInterface());
         if (Constants.REGISTRY_PROTOCOL.equals(invoker.getUrl().getProtocol())) {
             return protocol.export(invoker);
         }
@@ -56,6 +62,7 @@ public class ProtocolFilterWrapper implements Protocol {
     }
 
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
+        logger.xnd("ProtocolFilterWrapper refer invoker,url="+url.toFullString());
         if (Constants.REGISTRY_PROTOCOL.equals(url.getProtocol())) {
             return protocol.refer(type, url);
         }

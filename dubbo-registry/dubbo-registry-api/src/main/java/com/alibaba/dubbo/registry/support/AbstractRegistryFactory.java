@@ -87,6 +87,7 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
         // 锁定注册中心获取过程，保证注册中心单一实例
         LOCK.lock();
         try {
+            LOGGER.xnd("AbstractRegistryFactory，获取注册者，url="+url);
             Registry registry = REGISTRIES.get(key);
             if (registry != null) {
                 return registry;

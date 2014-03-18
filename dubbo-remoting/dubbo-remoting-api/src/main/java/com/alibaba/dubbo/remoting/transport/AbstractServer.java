@@ -73,6 +73,7 @@ public abstract class AbstractServer extends AbstractEndpoint implements Server 
                                         + " on " + getLocalAddress() + ", cause: " + t.getMessage(), t);
         }
         if (handler instanceof WrappedChannelHandler ){
+            logger.xnd("设置Netty的executor");
             executor = ((WrappedChannelHandler)handler).getExecutor();
         }
     }

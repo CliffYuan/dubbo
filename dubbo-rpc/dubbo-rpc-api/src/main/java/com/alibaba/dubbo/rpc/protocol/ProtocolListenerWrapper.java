@@ -20,6 +20,8 @@ import java.util.Collections;
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.rpc.Exporter;
 import com.alibaba.dubbo.rpc.ExporterListener;
 import com.alibaba.dubbo.rpc.Invoker;
@@ -36,9 +38,12 @@ import com.alibaba.dubbo.rpc.listener.ListenerInvokerWrapper;
  */
 public class ProtocolListenerWrapper implements Protocol {
 
+    protected static final Logger logger = LoggerFactory.getLogger(ProtocolListenerWrapper.class);
+
     private final Protocol protocol;
 
     public ProtocolListenerWrapper(Protocol protocol){
+        logger.xnd("创建ProtocolListenerWrapper实例");
         if (protocol == null) {
             throw new IllegalArgumentException("protocol == null");
         }
@@ -50,18 +55,24 @@ public class ProtocolListenerWrapper implements Protocol {
     }
 
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
+        logger.xnd("ProtocolListenerWrapper export invoker,"+invoker.getInterface());
         if (Constants.REGISTRY_PROTOCOL.equals(invoker.getUrl().getProtocol())) {
+            logger.xnd("ProtocolListenerWrapper export 发布注册中心");
             return protocol.export(invoker);
         }
+        logger.xnd("ProtocolListenerWrapper export invoker,return ListenerExporterWrapper");
         return new ListenerExporterWrapper<T>(protocol.export(invoker), 
                 Collections.unmodifiableList(ExtensionLoader.getExtensionLoader(ExporterListener.class)
                         .getActivateExtension(invoker.getUrl(), Constants.EXPORTER_LISTENER_KEY)));
     }
 
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
+        logger.xnd("ProtocolListenerWrapper refer invoker,url="+url.toFullString());
         if (Constants.REGISTRY_PROTOCOL.equals(url.getProtocol())) {
+            logger.xnd("ProtocolListenerWrapper refer 引用注册中心");
             return protocol.refer(type, url);
         }
+        logger.xnd("ProtocolListenerWrapper refer invoker,return ListenerInvokerWrapper");
         return new ListenerInvokerWrapper<T>(protocol.refer(type, url), 
                 Collections.unmodifiableList(
                         ExtensionLoader.getExtensionLoader(InvokerListener.class)
