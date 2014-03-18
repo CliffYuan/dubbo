@@ -19,6 +19,8 @@ import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
@@ -38,6 +40,8 @@ import com.alibaba.dubbo.remoting.ChannelHandler;
  */
 @Sharable
 public class NettyHandler extends SimpleChannelHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(NettyHandler.class);
 
     private final Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>(); // <ip:port, channel>
     
@@ -86,6 +90,7 @@ public class NettyHandler extends SimpleChannelHandler {
     
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+        logger.xnd("NettyHandler messageReceived 接收消息");
         NettyChannel channel = NettyChannel.getOrAddChannel(ctx.getChannel(), url, handler);
         try {
             handler.received(channel, e.getMessage());
@@ -97,6 +102,7 @@ public class NettyHandler extends SimpleChannelHandler {
     @Override
     public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         super.writeRequested(ctx, e);
+        logger.xnd("NettyHandler writeRequested 发送消息");
         NettyChannel channel = NettyChannel.getOrAddChannel(ctx.getChannel(), url, handler);
         try {
             handler.sent(channel, e.getMessage());

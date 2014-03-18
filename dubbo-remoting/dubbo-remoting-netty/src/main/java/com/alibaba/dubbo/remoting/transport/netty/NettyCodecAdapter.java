@@ -17,6 +17,8 @@ package com.alibaba.dubbo.remoting.transport.netty;
 
 import java.io.IOException;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
@@ -41,6 +43,8 @@ import com.alibaba.dubbo.remoting.buffer.DynamicChannelBuffer;
  */
 final class NettyCodecAdapter {
 
+    private static final Logger logger = LoggerFactory.getLogger(NettyCodecAdapter.class);
+
     private final ChannelHandler encoder = new InternalEncoder();
     
     private final ChannelHandler decoder = new InternalDecoder();
@@ -54,6 +58,7 @@ final class NettyCodecAdapter {
     private final com.alibaba.dubbo.remoting.ChannelHandler handler;
 
     public NettyCodecAdapter(Codec2 codec, URL url, com.alibaba.dubbo.remoting.ChannelHandler handler) {
+        logger.xnd("创建NettyCodecAdapter对象，codec="+codec.getClass()+",url="+url+",handler="+handler);
         this.codec = codec;
         this.url = url;
         this.handler = handler;
@@ -78,6 +83,7 @@ final class NettyCodecAdapter {
                 com.alibaba.dubbo.remoting.buffer.ChannelBuffers.dynamicBuffer(1024);
             NettyChannel channel = NettyChannel.getOrAddChannel(ch, url, handler);
             try {
+                logger.xnd("InternalDecoder，进行编码");
             	codec.encode(channel, buffer, msg);
             } finally {
                 NettyChannel.removeChannelIfDisconnected(ch);
@@ -93,6 +99,7 @@ final class NettyCodecAdapter {
 
         @Override
         public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws Exception {
+            logger.xnd("接收消息InternalDecoder，然后进行解码");
             Object o = event.getMessage();
             if (! (o instanceof ChannelBuffer)) {
                 ctx.sendUpstream(event);

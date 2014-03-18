@@ -16,6 +16,8 @@
 package com.alibaba.dubbo.remoting.exchange.support.header;
 
 import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.remoting.RemotingException;
 import com.alibaba.dubbo.remoting.Transporters;
 import com.alibaba.dubbo.remoting.exchange.ExchangeClient;
@@ -30,6 +32,8 @@ import com.alibaba.dubbo.remoting.transport.DecodeHandler;
  * @author william.liangf
  */
 public class HeaderExchanger implements Exchanger {
+
+    protected static final Logger logger = LoggerFactory.getLogger(HeaderExchanger.class);
     
     public static final String NAME = "header";
 
@@ -38,6 +42,7 @@ public class HeaderExchanger implements Exchanger {
     }
 
     public ExchangeServer bind(URL url, ExchangeHandler handler) throws RemotingException {
+        logger.xnd("创建HeaderExchangeServer，url="+url);
         return new HeaderExchangeServer(Transporters.bind(url, new DecodeHandler(new HeaderExchangeHandler(handler))));
     }
 

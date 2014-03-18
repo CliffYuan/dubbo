@@ -276,6 +276,7 @@ public class DubboProtocol extends AbstractProtocol {
     }
     
     private ExchangeServer createServer(URL url) {
+        logger.xnd("开始创建ExchangeServer对象，url="+url);
         //默认开启server关闭时发送readonly事件
         url = url.addParameterIfAbsent(Constants.CHANNEL_READONLYEVENT_SENT_KEY, Boolean.TRUE.toString());
         //默认开启heartbeat

@@ -65,7 +65,7 @@ public class Exchangers {
         }
         url = url.addParameterIfAbsent(Constants.CODEC_KEY, "exchange");
         Exchanger exchanger= getExchanger(url);
-        logger.xnd("查找通过url="+url+"查找Exchanger");
+        logger.xnd("查找通过url="+url+"查找Exchanger,="+exchanger);
         return exchanger.bind(url, handler);
     }
 
