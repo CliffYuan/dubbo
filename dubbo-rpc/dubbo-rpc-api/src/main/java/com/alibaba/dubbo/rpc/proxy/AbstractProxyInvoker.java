@@ -42,6 +42,7 @@ public abstract class AbstractProxyInvoker<T> implements Invoker<T> {
     private final URL url;
 
     public AbstractProxyInvoker(T proxy, Class<T> type, URL url){
+        logger.xnd("开始创建接口:"+type.getName()+"的Invoker对象，包装了类实例（即真实服务）");
         if (proxy == null) {
             throw new IllegalArgumentException("proxy == null");
         }
@@ -73,8 +74,8 @@ public abstract class AbstractProxyInvoker<T> implements Invoker<T> {
 
     public Result invoke(Invocation invocation) throws RpcException {
         try {
-            logger.xnd("执行:"+type.getSimpleName()+"的"+invocation.getMethodName()+"方法");
-            logger.xnd("转化为执行"+type.getSimpleName()+"对应的Wrapper的方法");
+            logger.xnd("调用Invoker实例执行:"+type.getSimpleName()+"的"+invocation.getMethodName()+"方法");
+
             return new RpcResult(doInvoke(proxy, invocation.getMethodName(), invocation.getParameterTypes(), invocation.getArguments()));
         } catch (InvocationTargetException e) {
             return new RpcResult(e.getTargetException());

@@ -45,11 +45,12 @@ public class JavassistProxyFactory extends AbstractProxyFactory {
             protected Object doInvoke(T proxy, String methodName, 
                                       Class<?>[] parameterTypes, 
                                       Object[] arguments) throws Throwable {
-                logger.xnd("执行:"+this.getInterface().getName()+"的"+methodName+"方法");
+               // logger.xnd("调用Invoker实例执行:"+this.getInterface().getName()+"的"+methodName+"方法");
+                logger.xnd("调用Invoker实例转化为执行"+this.getInterface().getSimpleName()+"对应的Wrapper的invokeMethod方法");
                 return wrapper.invokeMethod(proxy, methodName, parameterTypes, arguments);
             }
         };
-        logger.xnd("创建接口:"+type.getName()+"的Invoker对象，包装了类实例，及"+type.getName()+"包装代理类wrapper");
+        logger.xnd("结束创建接口:"+type.getName()+"的Invoker对象");
         return invoker;
     }
 
