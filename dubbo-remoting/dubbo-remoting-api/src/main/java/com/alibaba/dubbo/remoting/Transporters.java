@@ -18,6 +18,8 @@ package com.alibaba.dubbo.remoting;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.Version;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.remoting.transport.ChannelHandlerAdapter;
 import com.alibaba.dubbo.remoting.transport.ChannelHandlerDispatcher;
 
@@ -27,6 +29,8 @@ import com.alibaba.dubbo.remoting.transport.ChannelHandlerDispatcher;
  * @author william.liangf
  */
 public class Transporters {
+
+    protected static final Logger logger = LoggerFactory.getLogger(Transporters.class);
 
     public static Server bind(String url, ChannelHandler... handler) throws RemotingException {
         return bind(URL.valueOf(url), handler);
@@ -45,6 +49,7 @@ public class Transporters {
         } else {
             handler = new ChannelHandlerDispatcher(handlers);
         }
+        logger.xnd("Transporters ，开始绑定 handler"+handler);
         return getTransporter().bind(url, handler);
     }
 

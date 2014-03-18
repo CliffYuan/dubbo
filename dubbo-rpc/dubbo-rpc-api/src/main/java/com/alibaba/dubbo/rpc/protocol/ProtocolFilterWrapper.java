@@ -42,7 +42,7 @@ public class ProtocolFilterWrapper implements Protocol {
     private final Protocol protocol;
 
     public ProtocolFilterWrapper(Protocol protocol){
-        logger.xnd("创建ProtocolFilterWrapper实例");
+        logger.xnd("创建ProtocolFilterWrapper实例,protocol="+protocol.getClass().getSimpleName());
         if (protocol == null) {
             throw new IllegalArgumentException("protocol == null");
         }

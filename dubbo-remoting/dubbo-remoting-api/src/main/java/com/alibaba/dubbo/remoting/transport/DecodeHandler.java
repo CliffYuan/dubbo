@@ -34,9 +34,11 @@ public class DecodeHandler extends AbstractChannelHandlerDelegate {
 
     public DecodeHandler(ChannelHandler handler) {
         super(handler);
+        log.xnd("DecodeHandler 包装 handler,"+handler);
     }
 
     public void received(Channel channel, Object message) throws RemotingException {
+        log.xnd("DecodeHandler received,"+message);
         if (message instanceof Decodeable) {
             decode(message);
         }
@@ -53,6 +55,7 @@ public class DecodeHandler extends AbstractChannelHandlerDelegate {
     }
 
     private void decode(Object message) {
+        log.xnd("DecodeHandler decode,"+message);
         if (message != null && message instanceof Decodeable) {
             try {
                 ((Decodeable)message).decode();

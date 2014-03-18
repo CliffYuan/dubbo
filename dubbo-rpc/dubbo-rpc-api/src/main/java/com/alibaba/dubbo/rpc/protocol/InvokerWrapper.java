@@ -16,6 +16,8 @@
 package com.alibaba.dubbo.rpc.protocol;
 
 import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
@@ -27,12 +29,15 @@ import com.alibaba.dubbo.rpc.RpcException;
  * @author william.liangf
  */
 public class InvokerWrapper<T> implements Invoker<T> {
+
+    protected static final Logger logger = LoggerFactory.getLogger(InvokerWrapper.class);
     
     private final Invoker<T> invoker;
 
     private final URL url;
 
     public InvokerWrapper(Invoker<T> invoker, URL url){
+        logger.xnd("InvokerWrapper 包装，invoker="+invoker.getClass().getSimpleName()+",url="+url.toFullString());
         this.invoker = invoker;
         this.url = url;
     }
@@ -50,6 +55,7 @@ public class InvokerWrapper<T> implements Invoker<T> {
     }
 
     public Result invoke(Invocation invocation) throws RpcException {
+        logger.xnd("InvokerWrapper 执行，invoker="+invoker.getClass().getSimpleName()+",invocation="+invocation.getMethodName());
         return invoker.invoke(invocation);
     }
 

@@ -120,6 +120,7 @@ public abstract class AbstractInvoker<T> implements Invoker<T> {
     }
 
     public Result invoke(Invocation inv) throws RpcException {
+        logger.xnd("AbstractInvoker 执行"+this.getClass().getSimpleName()+",Invocation="+inv.getMethodName());
         if(destroyed) {
             throw new RpcException("Rpc invoker for service " + this + " on consumer " + NetUtils.getLocalHost() 
                                             + " use dubbo version " + Version.getVersion()

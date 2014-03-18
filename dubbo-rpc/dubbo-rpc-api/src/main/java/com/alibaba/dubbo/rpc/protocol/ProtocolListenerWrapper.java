@@ -43,7 +43,7 @@ public class ProtocolListenerWrapper implements Protocol {
     private final Protocol protocol;
 
     public ProtocolListenerWrapper(Protocol protocol){
-        logger.xnd("创建ProtocolListenerWrapper实例");
+        logger.xnd("创建ProtocolListenerWrapper实例,protocol="+protocol.getClass().getSimpleName());
         if (protocol == null) {
             throw new IllegalArgumentException("protocol == null");
         }

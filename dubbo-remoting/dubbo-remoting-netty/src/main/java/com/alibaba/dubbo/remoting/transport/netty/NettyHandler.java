@@ -90,8 +90,9 @@ public class NettyHandler extends SimpleChannelHandler {
     
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        logger.xnd("NettyHandler messageReceived 接收消息");
+        //logger.xnd("NettyHandler messageReceived 接收消息");
         NettyChannel channel = NettyChannel.getOrAddChannel(ctx.getChannel(), url, handler);
+        logger.xnd("NettyHandler messageReceived 接收消息,channel="+channel.getClass()+",handler="+handler.getClass());
         try {
             handler.received(channel, e.getMessage());
         } finally {
@@ -102,8 +103,9 @@ public class NettyHandler extends SimpleChannelHandler {
     @Override
     public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         super.writeRequested(ctx, e);
-        logger.xnd("NettyHandler writeRequested 发送消息");
+
         NettyChannel channel = NettyChannel.getOrAddChannel(ctx.getChannel(), url, handler);
+        logger.xnd("NettyHandler writeRequested 发送消息,channel="+channel.getClass()+",handler="+handler.getClass());
         try {
             handler.sent(channel, e.getMessage());
         } finally {

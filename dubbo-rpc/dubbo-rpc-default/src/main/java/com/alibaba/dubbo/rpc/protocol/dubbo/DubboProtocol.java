@@ -113,8 +113,10 @@ public class DubboProtocol extends AbstractProtocol {
         @Override
         public void received(Channel channel, Object message) throws RemotingException {
             if (message instanceof Invocation) {
+                logger.xnd("DubboProtocol ExchangeHandler 接收调用，Invocation="+message);
                 reply((ExchangeChannel) channel, message);
             } else {
+                logger.xnd("DubboProtocol ExchangeHandler 接收调用,啥也不做");
                 super.received(channel, message);
             }
         }
@@ -133,6 +135,7 @@ public class DubboProtocol extends AbstractProtocol {
         }
         
         private void invoke(Channel channel, String methodKey) {
+            logger.xnd("DubboProtocol ExchangeHandler 接收调用开始，将信息转化为Invocation");
             Invocation invocation = createInvocation(channel, channel.getUrl(), methodKey);
             if (invocation != null) {
                 try {
@@ -156,6 +159,7 @@ public class DubboProtocol extends AbstractProtocol {
             if (url.getParameter(Constants.STUB_EVENT_KEY, false)){
                 invocation.setAttachment(Constants.STUB_EVENT_KEY, Boolean.TRUE.toString());
             }
+            logger.xnd("DubboProtocol ExchangeHandler 接收调用开始，将信息转化为Invocation结束");
             return invocation;
         }
     };
@@ -194,6 +198,7 @@ public class DubboProtocol extends AbstractProtocol {
     }
     
     Invoker<?> getInvoker(Channel channel, Invocation inv) throws RemotingException{
+        logger.xnd("DubboProtocol，在exporterMap中查找Invoker开始，Invocation method="+inv.getMethodName());
         boolean isCallBackServiceInvoke = false;
         boolean isStubServiceInvoke = false;
         int port = channel.getLocalAddress().getPort();
@@ -211,6 +216,7 @@ public class DubboProtocol extends AbstractProtocol {
         }
         String serviceKey = serviceKey(port, path, inv.getAttachments().get(Constants.VERSION_KEY), inv.getAttachments().get(Constants.GROUP_KEY));
 
+        logger.xnd("DubboProtocol,DubboExporter的唯一标示为key="+serviceKey);
         DubboExporter<?> exporter = (DubboExporter<?>) exporterMap.get(serviceKey);
         
         if (exporter == null)

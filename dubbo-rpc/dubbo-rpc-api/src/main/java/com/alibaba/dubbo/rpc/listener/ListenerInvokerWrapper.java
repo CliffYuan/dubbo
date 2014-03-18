@@ -40,6 +40,7 @@ public class ListenerInvokerWrapper<T> implements Invoker<T> {
     private final List<InvokerListener> listeners;
 
     public ListenerInvokerWrapper(Invoker<T> invoker, List<InvokerListener> listeners){
+        logger.xnd("ListenerInvokerWrapper 实例化,包装Invoker ,="+invoker.getClass()+" 和 List<InvokerListener>");
         if (invoker == null) {
             throw new IllegalArgumentException("invoker == null");
         }
@@ -49,6 +50,7 @@ public class ListenerInvokerWrapper<T> implements Invoker<T> {
             for (InvokerListener listener : listeners) {
                 if (listener != null) {
                     try {
+                        logger.xnd("ListenerInvokerWrapper 实例化,遍历list,当前InvokerListener="+listener.getClass());
                         listener.referred(invoker);
                     } catch (Throwable t) {
                         logger.error(t.getMessage(), t);

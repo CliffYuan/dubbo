@@ -51,6 +51,7 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
     private final ExchangeHandler handler;
 
     public HeaderExchangeHandler(ExchangeHandler handler){
+        logger.xnd("HeaderExchangeHandler 包装handler,"+handler);
         if (handler == null) {
             throw new IllegalArgumentException("handler == null");
         }
@@ -64,6 +65,7 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
     }
 
     Response handleRequest(ExchangeChannel channel, Request req) throws RemotingException {
+        logger.xnd("HeaderExchangeHandler handleRequest,"+req);
         Response res = new Response(req.getId(), req.getVersion());
         if (req.isBroken()) {
             Object data = req.getData();
@@ -120,6 +122,7 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
     }
 
     public void sent(Channel channel, Object message) throws RemotingException {
+        logger.xnd("HeaderExchangeHandler sent,"+message);
         Throwable exception = null;
         try {
             channel.setAttribute(KEY_WRITE_TIMESTAMP, System.currentTimeMillis());
@@ -157,6 +160,7 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
     }
 
     public void received(Channel channel, Object message) throws RemotingException {
+        logger.xnd("HeaderExchangeHandler received,"+message);
         channel.setAttribute(KEY_READ_TIMESTAMP, System.currentTimeMillis());
         ExchangeChannel exchangeChannel = HeaderExchangeChannel.getOrAddChannel(channel);
         try {

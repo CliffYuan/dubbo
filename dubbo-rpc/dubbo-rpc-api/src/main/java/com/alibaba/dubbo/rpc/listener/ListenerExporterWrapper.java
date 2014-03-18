@@ -37,6 +37,7 @@ public class ListenerExporterWrapper<T> implements Exporter<T> {
     private final List<ExporterListener> listeners;
 
     public ListenerExporterWrapper(Exporter<T> exporter, List<ExporterListener> listeners){
+        logger.xnd("ListenerExporterWrapper 实例化,包装Exporter ,="+exporter.getClass()+" 和 List<ExporterListener>");
         if (exporter == null) {
             throw new IllegalArgumentException("exporter == null");
         }
@@ -47,6 +48,7 @@ public class ListenerExporterWrapper<T> implements Exporter<T> {
             for (ExporterListener listener : listeners) {
                 if (listener != null) {
                     try {
+                        logger.xnd("ListenerExporterWrapper 实例化,遍历list,当前ExporterListener="+listener.getClass());
                         listener.exported(this);
                     } catch (RuntimeException t) {
                         logger.error(t.getMessage(), t);

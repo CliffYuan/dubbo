@@ -42,7 +42,7 @@ public class HeaderExchanger implements Exchanger {
     }
 
     public ExchangeServer bind(URL url, ExchangeHandler handler) throws RemotingException {
-        logger.xnd("创建HeaderExchangeServer，url="+url);
+        logger.xnd("创建HeaderExchangeServer，url="+url+" handler="+handler.getClass());
         return new HeaderExchangeServer(Transporters.bind(url, new DecodeHandler(new HeaderExchangeHandler(handler))));
     }
 
