@@ -67,6 +67,7 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 
     protected Object decodeBody(Channel channel, InputStream is, byte[] header) throws IOException {
+        log.xnd("DubboCodec decodeBody");
         byte flag = header[2], proto = (byte) (flag & SERIALIZATION_MASK);
         Serialization s = CodecSupport.getSerialization(channel.getUrl(), proto);
         // get request id.

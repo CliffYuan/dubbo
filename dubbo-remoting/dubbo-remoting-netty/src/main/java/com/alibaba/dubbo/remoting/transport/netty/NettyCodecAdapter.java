@@ -58,7 +58,7 @@ final class NettyCodecAdapter {
     private final com.alibaba.dubbo.remoting.ChannelHandler handler;
 
     public NettyCodecAdapter(Codec2 codec, URL url, com.alibaba.dubbo.remoting.ChannelHandler handler) {
-        logger.xnd("创建NettyCodecAdapter对象，codec="+codec.getClass()+",url="+url+",handler="+handler);
+        logger.xnd("NettyCodecAdapter，创建NettyCodecAdapter对象，codec="+codec.getClass()+",url="+url+",handler="+handler);
         this.codec = codec;
         this.url = url;
         this.handler = handler;
@@ -99,7 +99,7 @@ final class NettyCodecAdapter {
 
         @Override
         public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws Exception {
-            logger.xnd("接收消息InternalDecoder，然后进行解码");
+            logger.xnd("InternalDecoder，接收消息InternalDecoder，然后进行解码");
             Object o = event.getMessage();
             if (! (o instanceof ChannelBuffer)) {
                 ctx.sendUpstream(event);

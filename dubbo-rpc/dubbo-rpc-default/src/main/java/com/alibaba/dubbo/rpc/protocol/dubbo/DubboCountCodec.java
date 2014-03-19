@@ -19,6 +19,8 @@ package com.alibaba.dubbo.rpc.protocol.dubbo;
 import java.io.IOException;
 
 import com.alibaba.dubbo.common.Constants;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.remoting.Channel;
 import com.alibaba.dubbo.remoting.Codec2;
 import com.alibaba.dubbo.remoting.buffer.ChannelBuffer;
@@ -33,13 +35,17 @@ import com.alibaba.dubbo.rpc.RpcResult;
  */
 public final class DubboCountCodec implements Codec2 {
 
+    private static final Logger log = LoggerFactory.getLogger(DubboCountCodec.class);
+
     private DubboCodec codec = new DubboCodec();
 
     public void encode(Channel channel, ChannelBuffer buffer, Object msg) throws IOException {
+        log.xnd("DubboCountCodec encode");
         codec.encode(channel, buffer, msg);
     }
 
     public Object decode(Channel channel, ChannelBuffer buffer) throws IOException {
+        log.xnd("DubboCountCodec decode");
         int save = buffer.readerIndex();
         MultiMessage result = MultiMessage.create();
         do {

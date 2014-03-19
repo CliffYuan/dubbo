@@ -16,6 +16,8 @@
 package com.alibaba.dubbo.remoting.transport.netty;
 
 import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.remoting.ChannelHandler;
 import com.alibaba.dubbo.remoting.Client;
 import com.alibaba.dubbo.remoting.RemotingException;
@@ -27,13 +29,17 @@ import com.alibaba.dubbo.remoting.Transporter;
  */
 public class NettyTransporter implements Transporter {
 
+    private static final Logger logger = LoggerFactory.getLogger(NettyTransporter.class);
+
     public static final String NAME = "netty";
-    
+
     public Server bind(URL url, ChannelHandler listener) throws RemotingException {
+        logger.xnd("NettyTransporter bind,开始创建NettyServer,url=" + url.toFullString() + ",listener=" + listener);
         return new NettyServer(url, listener);
     }
 
     public Client connect(URL url, ChannelHandler listener) throws RemotingException {
+        logger.xnd("NettyTransporter connect,开始创建NettyClient,url=" + url.toFullString() + ",listener=" + listener);
         return new NettyClient(url, listener);
     }
 
