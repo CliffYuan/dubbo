@@ -18,6 +18,8 @@ package com.alibaba.dubbo.remoting.transport.dispatcher;
 
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.remoting.ChannelHandler;
 import com.alibaba.dubbo.remoting.Dispatcher;
 import com.alibaba.dubbo.remoting.exchange.support.header.HeartbeatHandler;
@@ -29,6 +31,8 @@ import com.alibaba.dubbo.remoting.transport.MultiMessageHandler;
  */
 public class ChannelHandlers {
 
+    private static final Logger logger = LoggerFactory.getLogger(ChannelHandlers.class);
+
     public static ChannelHandler wrap(ChannelHandler handler, URL url){
         return ChannelHandlers.getInstance().wrapInternal(handler, url);
     }
@@ -36,8 +40,10 @@ public class ChannelHandlers {
     protected ChannelHandlers() {}
 
     protected ChannelHandler wrapInternal(ChannelHandler handler, URL url) {
-        return new MultiMessageHandler(new HeartbeatHandler(ExtensionLoader.getExtensionLoader(Dispatcher.class)
-                                        .getAdaptiveExtension().dispatch(handler, url)));
+        ChannelHandler handler1= ExtensionLoader.getExtensionLoader(Dispatcher.class)
+                .getAdaptiveExtension().dispatch(handler, url);
+        logger.xnd("NettyServer ChannelHandlers.wrapInternal(),根据url中的dispatcher来确定handler处理方式，使用使用线程池,handler="+handler1);
+        return new MultiMessageHandler(new HeartbeatHandler(handler1));
     }
 
     private static ChannelHandlers INSTANCE = new ChannelHandlers();

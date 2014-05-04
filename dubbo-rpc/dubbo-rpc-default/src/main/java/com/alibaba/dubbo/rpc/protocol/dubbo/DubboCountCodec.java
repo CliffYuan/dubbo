@@ -31,6 +31,7 @@ import com.alibaba.dubbo.rpc.RpcInvocation;
 import com.alibaba.dubbo.rpc.RpcResult;
 
 /**
+ * dubbo rpc 默认使用的编码
  * @author <a href="mailto:gang.lvg@alibaba-inc.com">kimi</a>
  */
 public final class DubboCountCodec implements Codec2 {

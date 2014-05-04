@@ -44,7 +44,8 @@ import static com.alibaba.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeIn
 
 /**
  * Dubbo codec.
- *
+ *是否解码，根据配置选择是否执行decode（）方法，
+ * 如果不是在io中执行，则不调用decode()方法，而在所有的实际执行中都调用下decode()，因为如果执行了则不会执行，有个hasDecoded变量来标示
  * @author qianlei
  * @author chao.liuc
  */
@@ -69,7 +70,8 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
     protected Object decodeBody(Channel channel, InputStream is, byte[] header) throws IOException {
         log.xnd("DubboCodec decodeBody");
         byte flag = header[2], proto = (byte) (flag & SERIALIZATION_MASK);
-        Serialization s = CodecSupport.getSerialization(channel.getUrl(), proto);
+        Serialization s = CodecSupport.getSerialization(channel.getUrl(), proto);//
+        log.xnd("DubboCodec decodeBody,序列化对象Serialization="+s);
         // get request id.
         long id = Bytes.bytes2long(header, 4);
         if ((flag & FLAG_REQUEST) == 0) {
@@ -93,6 +95,7 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
                         if (channel.getUrl().getParameter(
                             Constants.DECODE_IN_IO_THREAD_KEY,
                             Constants.DEFAULT_DECODE_IN_IO_THREAD)) {
+                            log.xnd("DubboCodec decodeBody,解码response,根据url参数decode.in.io，判断在io线程中解码");
                             result = new DecodeableRpcResult(channel, res, is,
                                                              (Invocation)getRequestData(id), proto);
                             result.decode();
@@ -134,8 +137,9 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
                     if (channel.getUrl().getParameter(
                         Constants.DECODE_IN_IO_THREAD_KEY,
                         Constants.DEFAULT_DECODE_IN_IO_THREAD)) {
+                        log.xnd("DubboCodec decodeBody,解码request,根据url参数decode.in.io，判断在io线程中解码");
                         inv = new DecodeableRpcInvocation(channel, req, is, proto);
-                        inv.decode();
+                        inv.decode();//是否解码，根据配置选择是否执行decode（）方法，用hasDecoded来标示，说明decode()方法可以重复执行。
                     } else {
                         inv = new DecodeableRpcInvocation(channel, req,
                                                           new UnsafeByteArrayInputStream(readMessageData(is)), proto);

@@ -39,6 +39,7 @@ import com.alibaba.dubbo.rpc.RpcInvocation;
 import static com.alibaba.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.decodeInvocationArgument;
 
 /**
+ * 服务端接收到的请求
  * @author <a href="mailto:gang.lvg@alibaba-inc.com">kimi</a>
  */
 public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Decodeable {
@@ -66,7 +67,7 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
     }
 
     public void decode() throws Exception {
-        if (!hasDecoded && channel != null && inputStream != null) {
+        if (!hasDecoded && channel != null && inputStream != null) {//通过hasDecoded来判断是否已经解码，
             try {
                 decode(channel, inputStream);
             } catch (Throwable e) {

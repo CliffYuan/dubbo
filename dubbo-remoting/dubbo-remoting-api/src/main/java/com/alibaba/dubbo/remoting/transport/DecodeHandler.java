@@ -55,7 +55,7 @@ public class DecodeHandler extends AbstractChannelHandlerDelegate {
     }
 
     private void decode(Object message) {
-        log.xnd("DecodeHandler decode,"+message);
+        log.xnd("DecodeHandler decode,都执行下decode（），已确定该该字节都进行了解码，跟DubboCodec.decodeBody()像对应，"+message);
         if (message != null && message instanceof Decodeable) {
             try {
                 ((Decodeable)message).decode();

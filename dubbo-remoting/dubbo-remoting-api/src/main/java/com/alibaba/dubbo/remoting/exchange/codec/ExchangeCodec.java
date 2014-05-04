@@ -82,12 +82,13 @@ public class ExchangeCodec extends TelnetCodec {
 
     public Object decode(Channel channel, ChannelBuffer buffer) throws IOException {
         int readable = buffer.readableBytes();
-        byte[] header = new byte[Math.min(readable, HEADER_LENGTH)];
+        byte[] header = new byte[Math.min(readable, HEADER_LENGTH)];//判断buffer可以读取的字节数和dubbo协议头长度，说白了就是读取头协议
         buffer.readBytes(header);
         return decode(channel, buffer, readable, header);
     }
     
     protected Object decode(Channel channel, ChannelBuffer buffer, int readable, byte[] header) throws IOException {
+        logger.xnd("ExchangeCodec.decode() 真正的解码 读取到的数据字节数="+readable);
         // check magic number.
         if (readable > 0 && header[0] != MAGIC_HIGH 
                 || readable > 1 && header[1] != MAGIC_LOW) {
@@ -112,11 +113,11 @@ public class ExchangeCodec extends TelnetCodec {
 
         // get data length.
         int len = Bytes.bytes2int(header, 12);
-        checkPayload(channel, len);
+        checkPayload(channel, len);               //读取的数据不能超过8M
 
         int tt = len + HEADER_LENGTH;
         if( readable < tt ) {
-            return DecodeResult.NEED_MORE_INPUT;
+            return DecodeResult.NEED_MORE_INPUT;//读取的数据没有协议中设置的这么多。
         }
 
         // limit input stream.
@@ -210,6 +211,7 @@ public class ExchangeCodec extends TelnetCodec {
     }
 
     protected void encodeRequest(Channel channel, ChannelBuffer buffer, Request req) throws IOException {
+        logger.xnd("ExchangeCodec.encodeRequest() 真正的编码,Request="+req);
         Serialization serialization = getSerialization(channel);
         // header.
         byte[] header = new byte[HEADER_LENGTH];
