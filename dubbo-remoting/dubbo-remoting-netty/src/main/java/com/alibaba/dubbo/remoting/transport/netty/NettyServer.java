@@ -44,8 +44,12 @@ import com.alibaba.dubbo.remoting.transport.AbstractServer;
 import com.alibaba.dubbo.remoting.transport.dispatcher.ChannelHandlers;
 
 /**
- * NettyServer
- * 
+ * NettyServer 中构造方法的传入的
+ * handler=new DecodeHandler(new HeaderExchangeHandler(new ExchangeHandlerAdapter()))
+ *
+ * handler1=ExecutionChannelHandler（handler）；
+ * 最后的handler=new MultiMessageHandler(new HeartbeatHandler(handler1));
+ *
  * @author qian.lei
  * @author chao.liuc
  */

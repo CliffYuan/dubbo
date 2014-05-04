@@ -326,6 +326,8 @@ public class DubboProtocol extends AbstractProtocol {
             service_share_connect = true;
             connections = 1;
         }
+
+        logger.xnd("DubboProtocol client连接数，connections="+connections+",url="+url);
         
         ExchangeClient[] clients = new ExchangeClient[connections];
         for (int i = 0; i < clients.length; i++) {
