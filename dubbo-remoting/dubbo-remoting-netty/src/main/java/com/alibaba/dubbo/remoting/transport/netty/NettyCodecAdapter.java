@@ -49,7 +49,7 @@ final class NettyCodecAdapter {
     
     private final ChannelHandler decoder = new InternalDecoder();
 
-    private final Codec2         codec;
+    private final Codec2         codec;//rpc 使用 DubboCountCodec
     
     private final URL            url;
     
