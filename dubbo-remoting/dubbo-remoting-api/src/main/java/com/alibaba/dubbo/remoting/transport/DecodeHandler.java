@@ -26,6 +26,9 @@ import com.alibaba.dubbo.remoting.exchange.Request;
 import com.alibaba.dubbo.remoting.exchange.Response;
 
 /**
+ * 对所有的message都做一次decode()处理，如果已经decode()则不会在执行。
+ * 其实就反序列化
+ *
  * @author <a href="mailto:gang.lvg@alibaba-inc.com">kimi</a>
  */
 public class DecodeHandler extends AbstractChannelHandlerDelegate {

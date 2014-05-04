@@ -44,11 +44,37 @@ import com.alibaba.dubbo.remoting.transport.AbstractServer;
 import com.alibaba.dubbo.remoting.transport.dispatcher.ChannelHandlers;
 
 /**
- * NettyServer 中构造方法的传入的
- * handler=new DecodeHandler(new HeaderExchangeHandler(new ExchangeHandlerAdapter()))
  *
- * handler1=ExecutionChannelHandler（handler）；
- * 最后的handler=new MultiMessageHandler(new HeartbeatHandler(handler1));
+ *(1) Handler={
+ * NettyServer 中构造方法的传入的
+ *
+ * handler1=new ExchangeHandlerAdapter()；         作用：TODO
+ * handler2=new HeaderExchangeHandler(handler1);  作用：TODO
+ * handler3=new DecodeHandler(handler2)           作用：序列化。                           默认都执行下，如果已经在IO线程序列化了，则不会在执行
+ * handler4=new ExecutionChannelHandler（handler3）作用：多线程执行。                       不一定就是这个，根据dispatcher的配置而定
+ * handler5=new HeartbeatHandler(handler4)        作用：添加执行时间,如果是心跳请求则直接返回。
+ * handler6=new MultiMessageHandler(handler5);
+ *
+ * 最后的handler=handler6
+ * }
+ *
+ * (2)decoder={
+ *  pipeline中的解码
+ *  decoder1=DubboCodec
+ *  decoder2=DubboCountCodec(decoder1)
+ *  decoder3=InternalDecoder(decoder2)
+ *
+ * 最后的decoder=decoder3
+ * }
+ *
+ * (3)encoder={
+ *  pipeline中的编码
+ *  encoder1=DubboCodec
+ *  encoder2=DubboCountCodec(encoder1)
+ *  encoder3=InternalEncoder(encoder2)
+ *
+ * 最后的encoder=encoder3
+ * }
  *
  * @author qian.lei
  * @author chao.liuc
@@ -95,7 +121,7 @@ public class NettyServer extends AbstractServer implements Server {
                 }*/
                 pipeline.addLast("decoder", adapter.getDecoder());
                 pipeline.addLast("encoder", adapter.getEncoder());
-                pipeline.addLast("handler", nettyHandler);
+                pipeline.addLast("handler", nettyHandler);//见NettyServer类上面的注释（1）
                 return pipeline;
             }
         });

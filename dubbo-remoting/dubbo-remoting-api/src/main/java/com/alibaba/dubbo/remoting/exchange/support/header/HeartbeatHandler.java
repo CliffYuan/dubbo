@@ -27,6 +27,8 @@ import com.alibaba.dubbo.remoting.exchange.Response;
 import com.alibaba.dubbo.remoting.transport.AbstractChannelHandlerDelegate;
 
 /**
+ * 对于不是心跳请求的HeartbeatHandler，
+ * 用于记录开始时间
  * @author <a href="mailto:gang.lvg@alibaba-inc.com">kimi</a>
  */
 public class HeartbeatHandler extends AbstractChannelHandlerDelegate {
