@@ -349,10 +349,10 @@ public final class ReflectUtils {
 		while( c.isArray() )
 		{
 			ret.append('[');
-			c = c.getComponentType();
+			c = c.getComponentType();//表示数组类型
 		}
 
-		if( c.isPrimitive() )
+		if( c.isPrimitive() ) //判定指定的 Class 对象是否表示一个基本类型。
 		{
 			String t = c.getName();
 			if( "void".equals(t) ) ret.append(JVM_VOID);

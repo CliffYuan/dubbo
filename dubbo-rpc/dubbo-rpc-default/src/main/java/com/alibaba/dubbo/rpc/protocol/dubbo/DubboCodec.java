@@ -75,6 +75,15 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
 
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 
+    /**
+     * 读取到的数据的解码
+     *
+     * @param channel
+     * @param is
+     * @param header
+     * @return
+     * @throws IOException
+     */
     protected Object decodeBody(Channel channel, InputStream is, byte[] header) throws IOException {
         log.xnd("DubboCodec decodeBody");
         byte flag = header[2], proto = (byte) (flag & SERIALIZATION_MASK);
@@ -181,6 +190,18 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
         return new byte[]{};
     }
 
+    /**
+     * 请求数据序列化
+     *
+     * ->DecodeableRpcInvocation.decode()方法
+     *
+     * 写数据和DecodeableRpcInvocation.decode()方法中的读数据步骤一致
+     *
+     * @param channel
+     * @param out
+     * @param data
+     * @throws IOException
+     */
     @Override
     protected void encodeRequestData(Channel channel, ObjectOutput out, Object data) throws IOException {
         RpcInvocation inv = (RpcInvocation) data;
@@ -194,9 +215,9 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
         Object[] args = inv.getArguments();
         if (args != null)
         for (int i = 0; i < args.length; i++){
-            out.writeObject(encodeInvocationArgument(channel, inv, i));
+            out.writeObject(encodeInvocationArgument(channel, inv, i));//（1）
         }
-        out.writeObject(inv.getAttachments());
+        out.writeObject(inv.getAttachments());//步骤（1）也会组张Attachment对象
     }
 
     @Override

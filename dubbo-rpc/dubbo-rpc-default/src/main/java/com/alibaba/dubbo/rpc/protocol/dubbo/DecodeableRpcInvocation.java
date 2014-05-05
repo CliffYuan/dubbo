@@ -86,6 +86,18 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * 请求数据反序列化（除协议头信息）
+     *
+     * ->对应DubboCodec.encodeRequestData()方法
+     *
+     * 读数据和DubboCodec.encodeRequestData()方法中的写数据步骤一致
+     *
+     * @param channel channel.
+     * @param input input stream.
+     * @return
+     * @throws IOException
+     */
     public Object decode(Channel channel, InputStream input) throws IOException {
         ObjectInput in = CodecSupport.getSerialization(channel.getUrl(), serializationType)
             .deserialize(channel.getUrl(), input);
@@ -98,16 +110,16 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
         try {
             Object[] args;
             Class<?>[] pts;
-            String desc = in.readUTF();
+            String desc = in.readUTF();//对应参数类型
             if (desc.length() == 0) {
                 pts = DubboCodec.EMPTY_CLASS_ARRAY;
                 args = DubboCodec.EMPTY_OBJECT_ARRAY;
             } else {
-                pts = ReflectUtils.desc2classArray(desc);
+                pts = ReflectUtils.desc2classArray(desc);//转化为Class
                 args = new Object[pts.length];
                 for (int i = 0; i < args.length; i++) {
                     try {
-                        args[i] = in.readObject(pts[i]);
+                        args[i] = in.readObject(pts[i]);//读取参数
                     } catch (Exception e) {
                         if (log.isWarnEnabled()) {
                             log.warn("Decode argument failed: " + e.getMessage(), e);
@@ -117,7 +129,7 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
             }
             setParameterTypes(pts);
 
-            Map<String, String> map = (Map<String, String>) in.readObject(Map.class);
+            Map<String, String> map = (Map<String, String>) in.readObject(Map.class);//对应Attachment
             if (map != null && map.size() > 0) {
                 Map<String, String> attachment = getAttachments();
                 if (attachment == null) {

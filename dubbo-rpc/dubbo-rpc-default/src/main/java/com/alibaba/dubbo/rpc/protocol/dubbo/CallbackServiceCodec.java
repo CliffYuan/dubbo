@@ -234,7 +234,15 @@ class CallbackServiceCodec {
             logger.error(e.getMessage(), e);
         }
     }
-    
+
+    /**
+     * 编码请求参数（主要是附件），
+     * @param channel
+     * @param inv
+     * @param paraIndex
+     * @return
+     * @throws IOException
+     */
     public static Object encodeInvocationArgument(Channel channel, RpcInvocation inv, int paraIndex) throws IOException{
         //encode时可直接获取url
         URL url = inv.getInvoker() == null ? null : inv.getInvoker().getUrl();
@@ -254,6 +262,17 @@ class CallbackServiceCodec {
                 return args[paraIndex];
         }
     }
+
+    /**
+     * 解码请求参数（主要是附件）
+     * @param channel
+     * @param inv
+     * @param pts
+     * @param paraIndex
+     * @param inObject
+     * @return
+     * @throws IOException
+     */
     public static Object decodeInvocationArgument(Channel channel, RpcInvocation inv, Class<?>[] pts, int paraIndex, Object inObject) throws IOException{
         //如果是callback，则创建proxy到客户端，方法的执行可通过channel调用到client端的callback接口
         //decode时需要根据channel及env获取url
