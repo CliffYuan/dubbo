@@ -38,8 +38,24 @@ import com.alibaba.dubbo.remoting.telnet.codec.TelnetCodec;
 import com.alibaba.dubbo.remoting.transport.CodecSupport;
 
 /**
- * ExchangeCodec.
- * 
+ *
+ * DUBBO协议报文格式
+ *
+ * (1)请求报文头
+ * MAGIC           0xdabb 2   -魔法数
+ * FLAG_TWOWAY            1   -请求标示
+                          1   -未设置值 todo ?????
+ * ID                     8   -请求ID
+ * LENGTH                 4   -数据长度
+ *
+ *（2）响应报文头
+ * MAGIC           0xdabb 2   -魔法数
+ * FLAG_TWOWAY            1   -请求标示
+ * STATUS                 1   -应答状态
+ * ID                     8   -请求ID
+ * LENGTH                 4   -数据长度
+ *
+ *
  * @author qianlei
  * @author william.liangf
  */
@@ -224,10 +240,12 @@ public class ExchangeCodec extends TelnetCodec {
         if (req.isTwoWay()) header[2] |= FLAG_TWOWAY;
         if (req.isEvent()) header[2] |= FLAG_EVENT;
 
+        //todo head[3]没有设置值？？？？？
+
         // set request id.
         Bytes.long2bytes(req.getId(), header, 4);
 
-        // encode request data.
+        // encode request data.  计算数据包大小
         int savedWriteIndex = buffer.writerIndex();
         buffer.writerIndex(savedWriteIndex + HEADER_LENGTH);
         ChannelBufferOutputStream bos = new ChannelBufferOutputStream(buffer);
