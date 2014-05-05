@@ -44,8 +44,16 @@ import static com.alibaba.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeIn
 
 /**
  * Dubbo codec.
- *是否解码，根据配置选择是否执行decode（）方法，
+ *
+ * （1）是否解码：
+ * 根据配置选择是否执行decode（）方法，
  * 如果不是在io中执行，则不调用decode()方法，而在所有的实际执行中都调用下decode()，因为如果执行了则不会执行，有个hasDecoded变量来标示
+ *
+ * （2）序列化 ObjectOutput ObjectInput
+ * ObjectInput.readUTF()=ObjectOutput.writeUTF()
+ * ObjectInput.readObject()=ObjectOutput.writeObject()
+ * 一一对应，也就是说在序列化时执行对于的write,在反序列化的时候执行对于的read方法。执行方法的顺序是一致的
+ *
  * @author qianlei
  * @author chao.liuc
  */
@@ -74,7 +82,7 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
         log.xnd("DubboCodec decodeBody,序列化对象Serialization="+s);
         // get request id.
         long id = Bytes.bytes2long(header, 4);
-        if ((flag & FLAG_REQUEST) == 0) {
+        if ((flag & FLAG_REQUEST) == 0) {               //当协议标示不是FLAG_REQUEST时
             // decode response.
             Response res = new Response(id);
             if ((flag & FLAG_EVENT) != 0) {

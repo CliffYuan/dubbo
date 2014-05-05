@@ -73,19 +73,26 @@ public class ExchangeCodec extends TelnetCodec {
     
     protected static final byte     MAGIC_LOW          = Bytes.short2bytes(MAGIC)[1];
 
-    // message flag.
-    protected static final byte     FLAG_REQUEST       = (byte) 0x80;
+    // message flag.                                                    二进制    10进制
+    protected static final byte     FLAG_REQUEST       = (byte) 0x80;//10000000  128
 
-    protected static final byte     FLAG_TWOWAY        = (byte) 0x40;
+    protected static final byte     FLAG_TWOWAY        = (byte) 0x40; //1000000  64
 
-    protected static final byte     FLAG_EVENT     = (byte) 0x20;
+    protected static final byte     FLAG_EVENT     = (byte) 0x20;      //100000  32
 
-    protected static final int      SERIALIZATION_MASK = 0x1f;
+    protected static final int      SERIALIZATION_MASK = 0x1f;          //11111
 
     public Short getMagicCode() {
         return MAGIC;
     }
 
+    /**
+     * DUBBO协议编码总方法
+     * @param channel
+     * @param buffer
+     * @param msg
+     * @throws IOException
+     */
     public void encode(Channel channel, ChannelBuffer buffer, Object msg) throws IOException {
         if (msg instanceof Request) {
             encodeRequest(channel, buffer, (Request) msg);
@@ -96,6 +103,13 @@ public class ExchangeCodec extends TelnetCodec {
         }
     }
 
+    /**
+     * DUBBO协议解码总方法
+     * @param channel
+     * @param buffer
+     * @return
+     * @throws IOException
+     */
     public Object decode(Channel channel, ChannelBuffer buffer) throws IOException {
         int readable = buffer.readableBytes();
         byte[] header = new byte[Math.min(readable, HEADER_LENGTH)];//判断buffer可以读取的字节数和dubbo协议头长度，说白了就是读取头协议

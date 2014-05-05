@@ -36,6 +36,7 @@ import com.alibaba.dubbo.rpc.RpcResult;
 import com.alibaba.dubbo.rpc.support.RpcUtils;
 
 /**
+ * 客户端收到的结果
  * @author <a href="mailto:gang.lvg@alibaba-inc.com">kimi</a>
  */
 public class DecodeableRpcResult extends RpcResult implements Codec, Decodeable {
