@@ -24,6 +24,9 @@ import com.alibaba.dubbo.rpc.proxy.AbstractProxyInvoker;
 import com.alibaba.dubbo.rpc.proxy.InvokerInvocationHandler;
 
 /**
+ * 主要功能：
+ * （1）组装Invoker
+ * （2）
  * JavaassistRpcProxyFactory 
 
  * @author william.liangf
@@ -35,6 +38,14 @@ public class JavassistProxyFactory extends AbstractProxyFactory {
         return (T) Proxy.getProxy(interfaces).newInstance(new InvokerInvocationHandler(invoker));
     }
 
+    /**
+     *
+     * @param proxy
+     * @param type
+     * @param url
+     * @param <T>
+     * @return
+     */
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) {
         // TODO Wrapper类不能正确处理带$的类名
         logger.xnd("开始创建接口:"+type.getName()+"的包装代理类wrapper");
