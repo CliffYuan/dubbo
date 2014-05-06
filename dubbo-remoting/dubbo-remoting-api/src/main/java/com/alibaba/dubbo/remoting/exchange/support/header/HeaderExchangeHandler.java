@@ -159,8 +159,16 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
                     .equals(NetUtils.filterLocalHost(address.getAddress().getHostAddress()));
     }
 
+    /**
+     * 如果是请求，并且是RPC则将请求转发给ExchangeHandlerAdapter实现类
+     * 如果是响应，则处理，todo
+     *
+     * @param channel channel.
+     * @param message message.
+     * @throws RemotingException
+     */
     public void received(Channel channel, Object message) throws RemotingException {
-        logger.xnd("HeaderExchangeHandler received,"+message);
+        logger.xnd("HeaderExchangeHandler received（）,"+message);
         channel.setAttribute(KEY_READ_TIMESTAMP, System.currentTimeMillis());
         ExchangeChannel exchangeChannel = HeaderExchangeChannel.getOrAddChannel(channel);
         try {
@@ -178,7 +186,8 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
                     }
                 }
             } else if (message instanceof Response) {
-                handleResponse(channel, (Response) message);
+                //响应
+                handleResponse(channel, (Response) message);//todo 响应处理，异步回调？？？
             } else if (message instanceof String) {
                 if (isClientSide(channel)) {
                     Exception e = new Exception("Dubbo client can not supported string message: " + message + " in channel: " + channel + ", url: " + channel.getUrl());

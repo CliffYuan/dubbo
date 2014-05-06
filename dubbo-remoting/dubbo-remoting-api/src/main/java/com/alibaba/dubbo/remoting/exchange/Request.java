@@ -21,6 +21,9 @@ import com.alibaba.dubbo.common.utils.StringUtils;
 
 /**
  * Request.
+ * 请求的对象
+ *
+ *（1）是解码后的对象，mData=DecodeableRpcInvocation
  * 
  * @author qian.lei
  * @author william.liangf

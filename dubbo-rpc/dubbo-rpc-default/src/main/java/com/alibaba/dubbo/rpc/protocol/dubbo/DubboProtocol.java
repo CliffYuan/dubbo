@@ -51,6 +51,10 @@ import com.alibaba.dubbo.rpc.protocol.AbstractProtocol;
 
 /**
  * dubbo protocol support.
+ * 主要功能：
+ *（1）DUBBO暴露服务，即Invoker，Invoker是真正服务的一个包装，组装Invoker见：
+ *（2）可能绑定端口，建立监听端口
+ *
  *
  * @author qian.lei
  * @author william.liangf
@@ -79,7 +83,15 @@ public class DubboProtocol extends AbstractProtocol {
     private static final String IS_CALLBACK_SERVICE_INVOKE = "_isCallBackServiceInvoke";
 
     private ExchangeHandler requestHandler = new ExchangeHandlerAdapter() {
-        
+
+        /**
+         * 根据对应的Invocation找到对应的invoker，然后执行
+         *
+         * @param channel
+         * @param message
+         * @return
+         * @throws RemotingException
+         */
         public Object reply(ExchangeChannel channel, Object message) throws RemotingException {
             if (message instanceof Invocation) {
                 Invocation inv = (Invocation) message;
@@ -196,7 +208,15 @@ public class DubboProtocol extends AbstractProtocol {
                     NetUtils.filterLocalHost(channel.getUrl().getIp())
                     .equals(NetUtils.filterLocalHost(address.getAddress().getHostAddress()));
     }
-    
+
+    /**
+     * 查找服务，即到map中找到对应的Invoker
+     *
+     * @param channel
+     * @param inv
+     * @return
+     * @throws RemotingException
+     */
     Invoker<?> getInvoker(Channel channel, Invocation inv) throws RemotingException{
         logger.xnd("DubboProtocol，在exporterMap中查找Invoker开始，Invocation method="+inv.getMethodName());
         boolean isCallBackServiceInvoke = false;
@@ -233,6 +253,14 @@ public class DubboProtocol extends AbstractProtocol {
         return DEFAULT_PORT;
     }
 
+    /**
+     * 暴露服务，即将invoker添加到map中
+     *
+     * @param invoker 服务的执行体
+     * @param <T>
+     * @return
+     * @throws RpcException
+     */
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
         logger.xnd("暴露Dubbo远程服务开始，url="+invoker.getUrl());
         URL url = invoker.getUrl();

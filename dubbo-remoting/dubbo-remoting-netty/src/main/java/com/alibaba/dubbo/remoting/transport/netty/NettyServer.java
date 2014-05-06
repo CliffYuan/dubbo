@@ -44,14 +44,17 @@ import com.alibaba.dubbo.remoting.transport.AbstractServer;
 import com.alibaba.dubbo.remoting.transport.dispatcher.ChannelHandlers;
 
 /**
+ *NettyServer中的三个重要对象
  *
  *(1) Handler={
  * NettyServer 中构造方法的传入的
  *
- * handler1=new ExchangeHandlerAdapter()；         作用：TODO
- * handler2=new HeaderExchangeHandler(handler1);  作用：TODO
- * handler3=new DecodeHandler(handler2)           作用：序列化。                           默认都执行下，如果已经在IO线程序列化了，则不会在执行
- * handler4=new ExecutionChannelHandler（handler3）作用：多线程执行。                       不一定就是这个，根据dispatcher的配置而定
+ * handler1=new ExchangeHandlerAdapter()；         作用：执行对应的服务（方法） #只做请求服务的处理，执行于服务端
+ * handler2=new HeaderExchangeHandler(handler1);  作用：执行响应后的处理      #只做响应通知的处理，执行于客户端  TODO 结果响应后的通知或异步通知？？
+
+ * handler3=new DecodeHandler(handler2)           作用：序列化。             #默认都执行下，如果已经在IO线程序列化了，则不会在执行
+ *          new ChannelHandlerDispatcher
+ * handler4=new ExecutionChannelHandler（handler3）作用：多线程执行。          #不一定就是这个，根据dispatcher的配置而定
  * handler5=new HeartbeatHandler(handler4)        作用：添加执行时间,如果是心跳请求则直接返回。
  * handler6=new MultiMessageHandler(handler5);
  *
