@@ -45,6 +45,12 @@ import static com.alibaba.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeIn
 /**
  * Dubbo codec.
  *
+ * (A)两个重要的方法encode（）和decode（）都在ExchangeCodec中
+ * (B)encode()根据类别（请求和响应）最后等于执行DubboCodec.encodeRequestData()或者DubboCodec.encodeResponseData()
+ * (C)decode()最后等于执行DubboCodec.decodeBody()，然后再根据类别（请求和响应）执行DecodeableRpcInvocation和DecodeableRpcResult的decode()
+ *
+ *
+ *  注意点：
  * （1）是否解码：
  * 根据配置选择是否执行decode（）方法，
  * 如果不是在io中执行，则不调用decode()方法，而在所有的实际执行中都调用下decode()，因为如果执行了则不会执行，有个hasDecoded变量来标示
@@ -77,6 +83,9 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
 
     /**
      * 读取到的数据的解码
+     *
+     * 根据是请求和响应对应到DecodeableRpcInvocation和DecodeableRpcResult的decode()
+     *
      *
      * @param channel
      * @param is
@@ -220,6 +229,18 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
         out.writeObject(inv.getAttachments());//步骤（1）也会组张Attachment对象
     }
 
+    /**
+     * 响应数据序列化
+     *
+     * ->对应DecodeableRpcResult.decode()方法
+     *
+     * 写数据和DecodeableRpcResult.decode()方法中的读数据步骤一致
+     *
+     * @param channel
+     * @param out
+     * @param data
+     * @throws IOException
+     */
     @Override
     protected void encodeResponseData(Channel channel, ObjectOutput out, Object data) throws IOException {
         Result result = (Result) data;
