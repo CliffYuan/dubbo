@@ -49,8 +49,16 @@ import com.alibaba.dubbo.rpc.service.GenericService;
 import com.alibaba.dubbo.rpc.support.ProtocolUtils;
 
 /**
- * ServiceConfig
- * 
+ * 发布服务
+ *
+ * 关键步骤：
+ * （1）Invoker<?> invoker = proxyFactory.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
+ *     构造Invoker.
+ * （2）Exporter<?> exporter = protocol.export(invoker);
+ *     发布服务（可能绑定端口，建立监听）
+ *
+ * #核心流程#
+ *
  * @author william.liangf
  * @export
  */

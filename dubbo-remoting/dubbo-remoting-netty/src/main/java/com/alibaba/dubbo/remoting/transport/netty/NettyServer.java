@@ -79,6 +79,9 @@ import com.alibaba.dubbo.remoting.transport.dispatcher.ChannelHandlers;
  * 最后的encoder=encoder3
  * }
  *
+ *
+ * #核心流程#
+ *
  * @author qian.lei
  * @author chao.liuc
  */

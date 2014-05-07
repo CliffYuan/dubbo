@@ -55,7 +55,7 @@ import com.alibaba.dubbo.rpc.protocol.AbstractProtocol;
  *（1）DUBBO暴露服务，即Invoker，Invoker是真正服务的一个包装，组装Invoker见：
  *（2）可能绑定端口，建立监听端口
  *
- *
+ * #核心流程#
  * @author qian.lei
  * @author william.liangf
  * @author chao.liuc

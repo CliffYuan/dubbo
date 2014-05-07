@@ -346,6 +346,8 @@ public abstract class Wrapper
 		cc.addMethod(c3.toString());
 
         logger.xnd("类："+c.getSimpleName()+"的Wrapper的invokeMethod方法内容为:");
+        logger.xnd(c1.toString());
+        logger.xnd(c2.toString());
         logger.xnd(c3.toString());
 
 		try

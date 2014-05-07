@@ -60,6 +60,9 @@ import static com.alibaba.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeIn
  * ObjectInput.readObject()=ObjectOutput.writeObject()
  * 一一对应，也就是说在序列化时执行对于的write,在反序列化的时候执行对于的read方法。执行方法的顺序是一致的
  *
+ *
+ * #核心流程#
+ *
  * @author qianlei
  * @author chao.liuc
  */
