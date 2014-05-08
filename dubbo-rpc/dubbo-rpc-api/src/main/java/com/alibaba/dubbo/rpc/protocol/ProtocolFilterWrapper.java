@@ -32,7 +32,9 @@ import com.alibaba.dubbo.rpc.RpcException;
 
 /**
  * ListenerProtocol
- * 
+ *
+ * key=filter
+ *
  * @author william.liangf
  */
 public class ProtocolFilterWrapper implements Protocol {

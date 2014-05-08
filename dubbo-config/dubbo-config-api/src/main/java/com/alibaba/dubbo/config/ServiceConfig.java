@@ -363,6 +363,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         if (provider != null && (port == null || port == 0)) {
             port = provider.getPort();
         }
+        //TODO
         final int defaultPort = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(name).getDefaultPort();
         if (port == null || port == 0) {
             port = defaultPort;
@@ -526,7 +527,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
 
                         Invoker<?> invoker = proxyFactory.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
-
+                        logger.xnd("发布服务，======= protocol="+protocol);
                         Exporter<?> exporter = protocol.export(invoker);
                         exporters.add(exporter);
                     }

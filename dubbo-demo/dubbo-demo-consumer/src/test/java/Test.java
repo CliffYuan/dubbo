@@ -1,3 +1,8 @@
+import com.alibaba.dubbo.common.extension.Adaptive;
+import com.alibaba.dubbo.common.extension.factory.AdaptiveExtensionFactory;
+import com.alibaba.dubbo.rpc.Protocol;
+import com.alibaba.dubbo.rpc.proxy.javassist.JavassistProxyFactory;
+
 /**
  * Created by yuanyuanming on 14-5-7.
  */
@@ -43,4 +48,19 @@ public class Test {
 //        com.alibaba.dubbo.rpc.Protocol extension = (com.alibaba.dubbo.rpc.Protocol)ExtensionLoader.getExtensionLoader(com.alibaba.dubbo.rpc.Protocol.class).getExtension(extName);
 //        return extension.refer(arg0, arg1);
 //    }
+
+
+
+
+    public static void main(String[] args) {
+        Class c=JavassistProxyFactory.class;
+      System.out.println(c.isAnnotationPresent(Adaptive.class));
+
+       c=Protocol.class;
+        System.out.println(c.isAnnotationPresent(Adaptive.class));
+
+        c=AdaptiveExtensionFactory.class;
+        System.out.println(c.isAnnotationPresent(Adaptive.class));
+
+    }
 }

@@ -33,7 +33,9 @@ import com.alibaba.dubbo.rpc.listener.ListenerInvokerWrapper;
 
 /**
  * ListenerProtocol
- * 
+ *
+ * key=listener
+ *
  * @author william.liangf
  */
 public class ProtocolListenerWrapper implements Protocol {

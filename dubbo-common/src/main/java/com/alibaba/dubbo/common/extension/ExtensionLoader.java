@@ -49,6 +49,37 @@ import com.alibaba.dubbo.common.utils.StringUtils;
  * <li>自动Wrap上扩展点的Wrap类。</li>
  * <li>缺省获得的的扩展点是一个Adaptive Instance。
  * </ul>
+ *
+ *
+ * 主要有3种类：
+ * （1）标注了Adaptive注解的类，
+ *      这个是返回的默认协议实现，如果不存在带Adaptive注解的类，则会自动创建一个
+ *
+ *      作用：对应接口的一个包装，然后根据getExtension(String name)获取到对应的扩展，
+ *          其实就是第3种情况的类。如果第2种情况的内存在，会使用第2种情况的类包装他，然后返回。
+ *
+ * （2）扩展点自动包装类，
+ *     有构造方法的类，且构造方法必须是只传人该接口的参数  如：clazz.getConstructor(type);   #复值在cachedWrapperClasses这个字段上
+ *
+ *     定义：扩展点自动包装
+ *           自动Wrap扩展点的Wrapper类
+ *           ExtensionLoader会把加载扩展点时（通过扩展点配置文件中内容），如果该实现有拷贝构造函数，则判定为扩展点Wrapper类。
+ *           Wrapper类同样实现了扩展点接口。
+ *
+ *     注意：
+ *           a.Wrapper不是扩展点实现，用于从ExtensionLoader返回扩展点时，Wrap在扩展点实现外。
+ *              即从ExtensionLoader中返回的实际上是Wrapper类的实例，Wrapper持有了实际的扩展点实现类。
+ *           b.扩展点的Wrapper类可以有多个，也可以根据需要新增。
+ *           c.通过Wrapper类可以把所有扩展点公共逻辑移至Wrapper中。
+ *               新加的Wrapper在所有的扩展点上添加了逻辑，有些类似AOP（Wraper代理了扩展点）。
+ *
+ * （3）扩展点类
+ *     不是第1,2种情况的类，没有第2种情况的类
+ *
+ *
+ *
+ *
+ *
  * 
  * @see <a href="http://java.sun.com/j2se/1.5.0/docs/guide/jar/jar.html#Service%20Provider">JDK5.0的自动发现机制实现</a>
  * 
@@ -81,21 +112,31 @@ public class ExtensionLoader<T> {
 
     private final ExtensionFactory objectFactory;
 
+    //保存对应的协议名字已经缓存的完整对象
+    private final ConcurrentMap<String, Holder<Object>> cachedInstances = new ConcurrentHashMap<String, Holder<Object>>();
+
+
+    //对应第3种情况
     private final ConcurrentMap<Class<?>, String> cachedNames = new ConcurrentHashMap<Class<?>, String>();
-    
     private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<Map<String,Class<?>>>();
 
+
+    //对应第1种情况
     private final Map<String, Activate> cachedActivates = new ConcurrentHashMap<String, Activate>();
 
     private volatile Class<?> cachedAdaptiveClass = null;
 
-    private final ConcurrentMap<String, Holder<Object>> cachedInstances = new ConcurrentHashMap<String, Holder<Object>>();
+
 
     private String cachedDefaultName;
 
     private final Holder<Object> cachedAdaptiveInstance = new Holder<Object>();
     private volatile Throwable createAdaptiveInstanceError;
 
+    //对应第二种情况
+    //PROTOCOL包装下面两个主要类
+    //class com.alibaba.dubbo.rpc.protocol.ProtocolFilterWrapper
+    //class com.alibaba.dubbo.rpc.protocol.ProtocolListenerWrapper
     private Set<Class<?>> cachedWrapperClasses;
     
     private Map<String, IllegalStateException> exceptions = new ConcurrentHashMap<String, IllegalStateException>();
@@ -494,6 +535,20 @@ public class ExtensionLoader<T> {
         return new IllegalStateException(buf.toString());
     }
 
+    /**
+     * 查找对应的扩展，并且同一个Name只执行一次
+     * 如果cachedWrapperClasses存在，则会对name对应的那个实现进行包装。
+     *
+     *
+     * 例子：
+     * name=dubbo
+     * dubbo=com.alibaba.dubbo.rpc.protocol.dubbo.DubboProtocol
+     * cachedWrapperClasses={filter=com.alibaba.dubbo.rpc.protocol.ProtocolFilterWrapper,listener=com.alibaba.dubbo.rpc.protocol.ProtocolListenerWrapper}
+     * 包装后就是这样的：new ProtocolListenerWrapper(new ProtocolFilterWrapper(new DubboProtocol()))
+     *
+     * @param name
+     * @return
+     */
     @SuppressWarnings("unchecked")
     private T createExtension(String name) {
         Class<?> clazz = getExtensionClasses().get(name);
@@ -545,6 +600,7 @@ public class ExtensionLoader<T> {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        logger.xnd(" ExtensionLoader.injectExtension(),创建了实例 "+instance);
         return instance;
     }
     
