@@ -23,6 +23,8 @@ import java.util.List;
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.bytecode.Wrapper;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.NetUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.registry.Registry;
@@ -40,6 +42,8 @@ import com.alibaba.dubbo.rpc.cluster.Cluster;
  * @author william.liangf
  */
 public class DubboRegistryFactory extends AbstractRegistryFactory {
+
+    private static final Logger logger = LoggerFactory.getLogger(DubboRegistryFactory.class);
     
     private Protocol protocol;
 
@@ -60,6 +64,7 @@ public class DubboRegistryFactory extends AbstractRegistryFactory {
     }
     
     public Registry createRegistry(URL url) {
+        logger.xnd("。。。。。。。。。。。。DubboRegistryFactory.createRegistry()使用dubbo注册服务。。。。。应该不会执行");
         url = getRegistryURL(url);
         List<URL> urls = new ArrayList<URL>();
         urls.add(url.removeParameter(Constants.BACKUP_KEY));

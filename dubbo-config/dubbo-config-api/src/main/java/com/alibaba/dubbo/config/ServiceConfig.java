@@ -55,7 +55,7 @@ import com.alibaba.dubbo.rpc.support.ProtocolUtils;
  * （1）Invoker<?> invoker = proxyFactory.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
  *     构造Invoker.
  * （2）Exporter<?> exporter = protocol.export(invoker);
- *     发布服务（可能绑定端口，建立监听）
+ *     发布服务
  *
  * #核心流程#
  *
@@ -528,6 +528,8 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
                         Invoker<?> invoker = proxyFactory.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
                         logger.xnd("发布服务，======= protocol="+protocol);
+
+                        //其实这里是调用RegistryProtocol.export(),因为协议是registry
                         Exporter<?> exporter = protocol.export(invoker);
                         exporters.add(exporter);
                     }

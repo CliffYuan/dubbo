@@ -37,7 +37,10 @@ import com.alibaba.dubbo.rpc.RpcException;
 
 /**
  * ZookeeperRegistry
- * 
+ *
+ * （1）建立到zk的连接，
+ * （2）实现对应的到zk的订阅，取阅等
+ *
  * @author william.liangf
  */
 public class ZookeeperRegistry extends FailbackRegistry {
@@ -67,6 +70,7 @@ public class ZookeeperRegistry extends FailbackRegistry {
         }
         this.root = group;
         zkClient = zookeeperTransporter.connect(url);
+        logger.xnd("ZookeeperRegistry 连接zk注册中心，url="+url);
         zkClient.addStateListener(new StateListener() {
             public void stateChanged(int state) {
             	if (state == RECONNECTED) {

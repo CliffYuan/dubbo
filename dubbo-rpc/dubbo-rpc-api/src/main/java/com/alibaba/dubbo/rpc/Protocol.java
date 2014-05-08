@@ -21,7 +21,9 @@ import com.alibaba.dubbo.common.extension.SPI;
 
 /**
  * Protocol. (API/SPI, Singleton, ThreadSafe)
- * 
+ *
+ * 依赖协议都是依赖一个自适应扩展点
+ *
  * @author william.liangf
  */
 @SPI("dubbo")
@@ -39,7 +41,11 @@ public interface Protocol {
      * 1. 协议在接收请求时，应记录请求来源方地址信息：RpcContext.getContext().setRemoteAddress();<br>
      * 2. export()必须是幂等的，也就是暴露同一个URL的Invoker两次，和暴露一次没有区别。<br>
      * 3. export()传入的Invoker由框架实现并传入，协议不需要关心。<br>
-     * 
+     *
+     * 注意：
+     * 依赖协议都是依赖一个自适应扩展点，具体执行那个扩展点，根据invoker.getUrl()获取协议，然后找到对于的真实扩展点，
+     * 如果协议为null则使用dubbo
+     *
      * @param <T> 服务的类型
      * @param invoker 服务的执行体
      * @return exporter 暴露服务的引用，用于取消暴露

@@ -52,7 +52,7 @@ import com.alibaba.dubbo.common.utils.StringUtils;
  *
  *
  * 主要有3种类：
- * （1）标注了Adaptive注解的类，
+ * （1）自适应扩展点（一个代理），标注了Adaptive注解的类，
  *      这个是返回的默认协议实现，如果不存在带Adaptive注解的类，则会自动创建一个
  *
  *      作用：对应接口的一个包装，然后根据getExtension(String name)获取到对应的扩展，
@@ -110,6 +110,7 @@ public class ExtensionLoader<T> {
 
     private final Class<?> type;
 
+    //加载扩展点时，自动注入依赖的扩展点,依赖这个对象
     private final ExtensionFactory objectFactory;
 
     //保存对应的协议名字已经缓存的完整对象
@@ -574,7 +575,12 @@ public class ExtensionLoader<T> {
                     type + ")  could not be instantiated: " + t.getMessage(), t);
         }
     }
-    
+
+    /**
+     * 加载扩展点时，自动注入依赖的扩展点
+     * @param instance
+     * @return
+     */
     private T injectExtension(T instance) {
         try {
             if (objectFactory != null) {

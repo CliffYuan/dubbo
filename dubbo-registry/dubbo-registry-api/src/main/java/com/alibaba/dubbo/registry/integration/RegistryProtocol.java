@@ -42,7 +42,13 @@ import com.alibaba.dubbo.rpc.cluster.Configurator;
 import com.alibaba.dubbo.rpc.protocol.InvokerWrapper;
 
 /**
- * RegistryProtocol
+ * 暴露服务，注册服务
+ *
+ * 步骤
+ * （1）先通过注入的扩展点export
+ * （2）通过注册中心注册服务
+ *
+ * #核心流程#
  * 
  * @author william.liangf
  * @author chao.liuc
@@ -54,7 +60,9 @@ public class RegistryProtocol implements Protocol {
     public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
-    
+
+    //该属性是扩展点类型，则会注入扩展点对象，
+    //根据export参数判断，如果是dubbo协议，则是DubboProtocol
     private Protocol protocol;
     
     public void setProtocol(Protocol protocol) {
@@ -192,9 +200,11 @@ public class RegistryProtocol implements Protocol {
         URL registryUrl = originInvoker.getUrl();
         if (Constants.REGISTRY_PROTOCOL.equals(registryUrl.getProtocol())) {
             String protocol = registryUrl.getParameter(Constants.REGISTRY_KEY, Constants.DEFAULT_DIRECTORY);
+            //注意：setProtocol()返回一个新的URL，对原对象没有影响
             registryUrl = registryUrl.setProtocol(protocol).removeParameter(Constants.REGISTRY_KEY);
+
         }
-        return registryFactory.getRegistry(registryUrl);
+        return registryFactory.getRegistry(registryUrl);//如果注册中心是zk，实际的扩展点就是ZookeeperRegistryFactory
     }
 
     /**

@@ -50,7 +50,10 @@ import com.alibaba.dubbo.registry.Registry;
 
 /**
  * AbstractRegistry. (SPI, Prototype, ThreadSafe)
- * 
+ *
+ * 保存缓存文件，
+ * （1）同步保存，
+ * （2）异步定时任务保存
  * @author chao.liuc
  * @author william.liangf
  */
@@ -81,6 +84,7 @@ public abstract class AbstractRegistry implements Registry {
     
     private final AtomicLong lastCacheChanged = new AtomicLong();
 
+    //需要注册的
     private final Set<URL> registered = new ConcurrentHashSet<URL>();
 
     private final ConcurrentMap<URL, Set<NotifyListener>> subscribed = new ConcurrentHashMap<URL, Set<NotifyListener>>();
@@ -450,6 +454,10 @@ public abstract class AbstractRegistry implements Registry {
         }
     }
 
+    /**
+     * 通知的时候保存到文件
+     * @param url
+     */
     private void saveProperties(URL url) {
         if (file == null) {
             return;

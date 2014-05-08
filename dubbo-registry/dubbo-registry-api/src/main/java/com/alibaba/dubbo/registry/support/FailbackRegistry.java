@@ -36,7 +36,10 @@ import com.alibaba.dubbo.registry.NotifyListener;
 
 /**
  * FailbackRegistry. (SPI, Prototype, ThreadSafe)
- * 
+ *
+ * 注册和通知重试，通过定时任务完成
+ *
+ *
  * @author william.liangf
  */
 public abstract class FailbackRegistry extends AbstractRegistry {
@@ -60,6 +63,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
     public FailbackRegistry(URL url) {
         super(url);
         int retryPeriod = url.getParameter(Constants.REGISTRY_RETRY_PERIOD_KEY, Constants.DEFAULT_REGISTRY_RETRY_PERIOD);
+        logger.xnd("FailbackRegistry 创建定时任务启动器，每"+retryPeriod+"执行一次");
         this.retryFuture = retryExecutor.scheduleWithFixedDelay(new Runnable() {
             public void run() {
                 // 检测并连接注册中心
@@ -301,6 +305,12 @@ public abstract class FailbackRegistry extends AbstractRegistry {
     }
 
     // 重试失败的动作
+    // 主要包括:
+    // (1)注册失败的重新注册
+    // (2)取消注册失败的重新取消
+    // (3)订阅失败的重新订阅
+    // (4)取消订阅失败的重新取消订阅
+    // (5)失败的通知重试
     protected void retry() {
         if (! failedRegistered.isEmpty()) {
             Set<URL> failed = new HashSet<URL>(failedRegistered);
