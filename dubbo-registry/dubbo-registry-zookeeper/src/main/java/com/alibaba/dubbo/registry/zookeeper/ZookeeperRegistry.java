@@ -98,6 +98,7 @@ public class ZookeeperRegistry extends FailbackRegistry {
     }
 
     protected void doRegister(URL url) {
+        logger.xnd("ZookeeperRegistry.doSubscribe() 注册服务url="+url.toFullString());
         try {
         	zkClient.create(toUrlPath(url), url.getParameter(Constants.DYNAMIC_KEY, true));
         } catch (Throwable e) {
@@ -115,7 +116,9 @@ public class ZookeeperRegistry extends FailbackRegistry {
 
     protected void doSubscribe(final URL url, final NotifyListener listener) {
         try {
+            logger.xnd("ZookeeperRegistry.doSubscribe() 订阅服务url="+url.toFullString());
             if (Constants.ANY_VALUE.equals(url.getServiceInterface())) {
+                //interface=* 正常的服务发布订阅应该不会执行
                 String root = toRootPath();
                 ConcurrentMap<NotifyListener, ChildListener> listeners = zkListeners.get(url);
                 if (listeners == null) {
@@ -149,6 +152,8 @@ public class ZookeeperRegistry extends FailbackRegistry {
                     }
                 }
             } else {
+                //服务提供方只有con
+                //遍历和监听
                 List<URL> urls = new ArrayList<URL>();
                 for (String path : toCategoriesPath(url)) {
                     ConcurrentMap<NotifyListener, ChildListener> listeners = zkListeners.get(url);
