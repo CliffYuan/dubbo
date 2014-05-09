@@ -251,8 +251,15 @@ public abstract class FailbackRegistry extends AbstractRegistry {
         }
     }
 
+    /**
+     * 如果是动态通知= NotifyListener=RegistryDirectory
+     * @param url
+     * @param listener
+     * @param urls
+     */
     @Override
     protected void notify(URL url, NotifyListener listener, List<URL> urls) {
+        logger.xnd("   ZK---NOTIFY FailbackRegistry.notify() 监听通知 path url="+url);
         if (url == null) {
             throw new IllegalArgumentException("notify url == null");
         }

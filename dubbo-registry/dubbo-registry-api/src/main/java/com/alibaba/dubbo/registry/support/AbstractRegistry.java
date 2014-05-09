@@ -427,6 +427,7 @@ public abstract class AbstractRegistry implements Registry {
         }
         Map<String, List<URL>> result = new HashMap<String, List<URL>>();
         for (URL u : urls) {
+            logger.xnd("   ZK---NOTIFY FailbackRegistry.notify() 监听通知 url="+u);
             if (UrlUtils.isMatch(url, u)) {
             	String category = u.getParameter(Constants.CATEGORY_KEY, Constants.DEFAULT_CATEGORY);
             	List<URL> categoryList = result.get(category);

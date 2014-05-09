@@ -161,6 +161,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
         List<URL> routerUrls = new ArrayList<URL>();
         List<URL> configuratorUrls = new ArrayList<URL>();
         for (URL url : urls) {
+            logger.xnd("   ZK---NOTIFY RegistryDirectory.notify() 真实的监听，最终的执行，url="+url);
             String protocol = url.getProtocol();
             String category = url.getParameter(Constants.CATEGORY_KEY, Constants.DEFAULT_CATEGORY);
             if (Constants.ROUTERS_CATEGORY.equals(category) 
@@ -227,6 +228,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
             if (invokerUrls.size() ==0 ){
             	return;
             }
+
             Map<String, Invoker<T>> newUrlInvokerMap = toInvokers(invokerUrls) ;// 将URL列表转成Invoker列表
             Map<String, List<Invoker<T>>> newMethodInvokerMap = toMethodInvokers(newUrlInvokerMap); // 换方法名映射Invoker列表
             // state change
@@ -372,6 +374,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
         		}
         	}
             if (Constants.EMPTY_PROTOCOL.equals(providerUrl.getProtocol())) {
+                //todo empty 为啥过滤了？？？？ 为啥要写empty
                 continue;
             }
             if (! ExtensionLoader.getExtensionLoader(Protocol.class).hasExtension(providerUrl.getProtocol())) {
@@ -386,6 +389,8 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
                 continue;
             }
             keys.add(key);
+
+
             // 缓存key为没有合并消费端参数的URL，不管消费端如何合并参数，如果服务端URL发生变化，则重新refer
             Map<String, Invoker<T>> localUrlInvokerMap = this.urlInvokerMap; // local reference
             Invoker<T> invoker = localUrlInvokerMap == null ? null : localUrlInvokerMap.get(key);

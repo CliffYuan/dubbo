@@ -116,7 +116,7 @@ public class ZookeeperRegistry extends FailbackRegistry {
 
     protected void doSubscribe(final URL url, final NotifyListener listener) {
         try {
-            logger.xnd("ZookeeperRegistry.doSubscribe() 订阅服务url="+url.toFullString());
+            logger.xnd("   ZK---Subscribe ZookeeperRegistry.doSubscribe() 订阅服务url="+url.toFullString());
             if (Constants.ANY_VALUE.equals(url.getServiceInterface())) {
                 //interface=* 正常的服务发布订阅应该不会执行
                 String root = toRootPath();
@@ -171,11 +171,14 @@ public class ZookeeperRegistry extends FailbackRegistry {
                         zkListener = listeners.get(listener);
                     }
                     zkClient.create(path, false);
+
+                    //第一次添加监听，并且查询返回子路径
                     List<String> children = zkClient.addChildListener(path, zkListener);
                     if (children != null) {
                     	urls.addAll(toUrlsWithEmpty(url, path, children));
                     }
                 }
+                //触发监听执行，即消费者订阅时，通过查询到的结果，立即触发执行
                 notify(url, listener, urls);
             }
         } catch (Throwable e) {
