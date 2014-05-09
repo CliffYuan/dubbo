@@ -260,7 +260,10 @@ public class RegistryProtocol implements Protocol {
     
     @SuppressWarnings("unchecked")
 	public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
+        logger.xnd("RegistryProtocol refer Invoker,把服务消费者发布到注册中心");
+
         url = url.setProtocol(url.getParameter(Constants.REGISTRY_KEY, Constants.DEFAULT_REGISTRY)).removeParameter(Constants.REGISTRY_KEY);
+        //获取zk连接
         Registry registry = registryFactory.getRegistry(url);
         if (RegistryService.class.equals(type)) {
         	return proxyFactory.getInvoker((T) registry, type, url);
@@ -281,7 +284,16 @@ public class RegistryProtocol implements Protocol {
     private Cluster getMergeableCluster() {
         return ExtensionLoader.getExtensionLoader(Cluster.class).getExtension("mergeable");
     }
-    
+
+    /**
+     * FailoverClusterInvoker
+     * @param cluster
+     * @param registry
+     * @param type
+     * @param url
+     * @param <T>
+     * @return
+     */
     private <T> Invoker<T> doRefer(Cluster cluster, Registry registry, Class<T> type, URL url) {
         RegistryDirectory<T> directory = new RegistryDirectory<T>(type, url);
         directory.setRegistry(registry);
@@ -292,10 +304,16 @@ public class RegistryProtocol implements Protocol {
             registry.register(subscribeUrl.addParameters(Constants.CATEGORY_KEY, Constants.CONSUMERS_CATEGORY,
                     Constants.CHECK_KEY, String.valueOf(false)));
         }
+
+
+        //监控通知在RegistryDirectory中，实现了NotifyListener接口
         directory.subscribe(subscribeUrl.addParameter(Constants.CATEGORY_KEY, 
                 Constants.PROVIDERS_CATEGORY 
                 + "," + Constants.CONFIGURATORS_CATEGORY 
                 + "," + Constants.ROUTERS_CATEGORY));
+
+
+
         return cluster.join(directory);
     }
 

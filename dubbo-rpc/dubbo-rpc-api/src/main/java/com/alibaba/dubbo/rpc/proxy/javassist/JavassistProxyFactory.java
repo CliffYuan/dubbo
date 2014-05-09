@@ -26,12 +26,15 @@ import com.alibaba.dubbo.rpc.proxy.InvokerInvocationHandler;
 /**
  * 主要功能：
  * （1）组装Invoker， #该Invoker引用实际的服务提供者
- * （2）
+ * （2）组装代理      #该Proxy实现了接口，包装了Invoker,类似其实就是jdk的动态代理
  *
- * 步骤：
+ * 组装Invoker步骤：
  * （1）构造Wrapper对象
  * （2）构造Invoker对象
  * （3）当请求过来时，执行invoker.invoke(Invocation invocation)方法
+ *
+ * 组装代理步骤：
+ * （1）包装Invoker=默认是FailoverClusterInvoker
  *
  * #核心流程#
  *

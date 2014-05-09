@@ -51,8 +51,24 @@ import com.alibaba.dubbo.rpc.service.GenericService;
 import com.alibaba.dubbo.rpc.support.ProtocolUtils;
 
 /**
- * ReferenceConfig
- * 
+ * 消费服务
+ *
+ *
+ * (1)获取对象的过程（代理）
+ * invoker=new FailoverClusterInvoker(new InvokerDelegete(new DubboInvoker()))
+ *
+ * T=new Proxy(invoker)
+ *
+ * T就是提供给框架使用者（或者spring的bean）的对象
+ *
+ * (2)invoker获取过程
+ * DubboInvoker是通过注册中心获取服务提供者，然后RegistryDirectory.toInvokers(),
+ * 然后通过protocol.refer(serviceType, url)，找到DubboProtocol.refer()获得的。
+ * DubboInvoker=protocol.refer(serviceType, url)
+ * invoker = new InvokerDelegete<T>(protocol.refer(serviceType, url), url, providerUrl);
+ *
+ * #核心流程#
+ *
  * @author william.liangf
  * @export
  */
@@ -389,16 +405,21 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
             }
 
             if (urls.size() == 1) {
+                //动态的服务提供者
+                logger.xnd("ReferenceConfig.createProxy() 1 引用服务，创建invoker,url="+urls.get(0).toFullString());
                 invoker = refprotocol.refer(interfaceClass, urls.get(0));
             } else {
+                //静态的服务提供者
                 List<Invoker<?>> invokers = new ArrayList<Invoker<?>>();
                 URL registryURL = null;
                 for (URL url : urls) {
+                    logger.xnd("ReferenceConfig.createProxy() n 引用服务，创建invoker,url="+url.toFullString());
                     invokers.add(refprotocol.refer(interfaceClass, url));
                     if (Constants.REGISTRY_PROTOCOL.equals(url.getProtocol())) {
                         registryURL = url; // 用了最后一个registry url
                     }
                 }
+                logger.xnd("ReferenceConfig.createProxy() join 引用服务，创建invoker,registryURL="+registryURL);
                 if (registryURL != null) { // 有 注册中心协议的URL
                     // 对有注册中心的Cluster 只用 AvailableCluster
                     URL u = registryURL.addParameter(Constants.CLUSTER_KEY, AvailableCluster.NAME); 
@@ -422,6 +443,9 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         if (logger.isInfoEnabled()) {
             logger.info("Refer dubbo service " + interfaceClass.getName() + " from url " + invoker.getUrl());
         }
+
+
+
         // 创建服务代理
         return (T) proxyFactory.getProxy(invoker);
     }

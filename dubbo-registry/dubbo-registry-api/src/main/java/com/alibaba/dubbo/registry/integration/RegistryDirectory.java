@@ -54,7 +54,10 @@ import com.alibaba.dubbo.rpc.support.RpcUtils;
 
 /**
  * RegistryDirectory
- * 
+ *
+ * 消费者的监控通知
+ *
+ * #核心流程#
  * @author william.liangf
  * @author chao.liuc
  */
@@ -162,11 +165,14 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
             String category = url.getParameter(Constants.CATEGORY_KEY, Constants.DEFAULT_CATEGORY);
             if (Constants.ROUTERS_CATEGORY.equals(category) 
                     || Constants.ROUTE_PROTOCOL.equals(protocol)) {
+                //路由
                 routerUrls.add(url);
             } else if (Constants.CONFIGURATORS_CATEGORY.equals(category) 
                     || Constants.OVERRIDE_PROTOCOL.equals(protocol)) {
+                //配置
                 configuratorUrls.add(url);
             } else if (Constants.PROVIDERS_CATEGORY.equals(category)) {
+                //服务提供者
                 invokerUrls.add(url);
             } else {
                 logger.warn("Unsupported category " + category + " in notified url: " + url + " from registry " + getUrl().getAddress() + " to consumer " + NetUtils.getLocalHost());

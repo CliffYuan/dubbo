@@ -41,8 +41,9 @@ import com.alibaba.dubbo.rpc.support.RpcUtils;
  */
 public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
 
-    private static final Logger                logger                            = LoggerFactory
-                                                                                         .getLogger(AbstractClusterInvoker.class);
+    private static final Logger                logger                            = LoggerFactory.getLogger(AbstractClusterInvoker.class);
+
+    //监听通知Directory，才能获取到服务者
     protected final Directory<T>               directory;
 
     protected final boolean                    availablecheck;
